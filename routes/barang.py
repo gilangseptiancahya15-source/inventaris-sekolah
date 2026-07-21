@@ -49,7 +49,22 @@ def add():
     tanggal_masuk = request.form.get('tanggal_masuk')
     deskripsi = request.form.get('deskripsi', '').strip()
 
-    # Server Validation
+    # Server Validation: Data Kosong
+    if not kode_barang or not nama_barang or not kondisi or not tanggal_masuk:
+        flash("Silakan lengkapi semua field yang diwajibkan (bertanda bintang).", "danger")
+        return redirect(url_for('barang.index'))
+        
+    # Server Validation: Kategori Harus Ada
+    if not kategori_id or not Kategori.query.get(kategori_id):
+        flash("Kategori barang wajib dipilih dari opsi yang tersedia.", "danger")
+        return redirect(url_for('barang.index'))
+        
+    # Server Validation: Jumlah Minimal 1
+    if jumlah is None or jumlah < 1:
+        flash("Jumlah stok barang minimal harus 1 unit.", "danger")
+        return redirect(url_for('barang.index'))
+
+    # Server Validation: Kode Barang Unik
     if BarangInventaris.query.filter_by(kode_barang=kode_barang).first():
         flash(f"Kode Barang '{kode_barang}' sudah terdaftar. Gunakan kode lain.", "warning")
         return redirect(url_for('barang.index'))
@@ -92,20 +107,42 @@ def edit(id):
     
     kode_barang = request.form.get('kode_barang', '').strip()
     
-    # Validasi duplikasi Kode Barang pada entitas lain
+    nama_barang = request.form.get('nama_barang', '').strip()
+    kategori_id = request.form.get('kategori_id')
+    jumlah = request.form.get('jumlah', type=int)
+    kondisi = request.form.get('kondisi')
+    lokasi = request.form.get('lokasi', '').strip()
+    deskripsi = request.form.get('deskripsi', '').strip()
+    tanggal_masuk = request.form.get('tanggal_masuk')
+
+    # Server Validation: Data Kosong
+    if not kode_barang or not nama_barang or not kondisi or not tanggal_masuk:
+        flash("Form tidak lengkap. Pastikan semua field wajib telah diisi.", "danger")
+        return redirect(url_for('barang.index'))
+        
+    # Server Validation: Kategori Harus Ada
+    if not kategori_id or not Kategori.query.get(kategori_id):
+        flash("Kategori barang tidak valid.", "danger")
+        return redirect(url_for('barang.index'))
+        
+    # Server Validation: Jumlah Minimal 1
+    if jumlah is None or jumlah < 1:
+        flash("Jumlah stok barang minimal harus 1 unit.", "danger")
+        return redirect(url_for('barang.index'))
+    
+    # Server Validation: Kode Barang Unik (kecuali entitasnya sendiri)
     if BarangInventaris.query.filter(BarangInventaris.kode_barang == kode_barang, BarangInventaris.id != id).first():
         flash(f"Kode Barang '{kode_barang}' sudah digunakan oleh barang lain.", "warning")
         return redirect(url_for('barang.index'))
         
     barang.kode_barang = kode_barang
-    barang.nama_barang = request.form.get('nama_barang', '').strip()
-    barang.kategori_id = request.form.get('kategori_id')
-    barang.jumlah = request.form.get('jumlah', type=int)
-    barang.kondisi = request.form.get('kondisi')
-    barang.lokasi = request.form.get('lokasi', '').strip()
-    barang.deskripsi = request.form.get('deskripsi', '').strip()
+    barang.nama_barang = nama_barang
+    barang.kategori_id = kategori_id
+    barang.jumlah = jumlah
+    barang.kondisi = kondisi
+    barang.lokasi = lokasi
+    barang.deskripsi = deskripsi
     
-    tanggal_masuk = request.form.get('tanggal_masuk')
     if tanggal_masuk:
         try:
             barang.tanggal_masuk = datetime.strptime(tanggal_masuk, '%Y-%m-%d').date()

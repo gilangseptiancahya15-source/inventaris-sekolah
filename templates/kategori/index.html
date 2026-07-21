@@ -73,8 +73,8 @@
                                     <div class="modal-body text-start">
                                         <div class="mb-3">
                                             <label class="form-label fw-semibold text-muted">Nama Kategori <span class="text-danger">*</span></label>
-                                            <!-- Client Validation: atribut required dan maxlength -->
-                                            <input type="text" class="form-control" name="nama_kategori" value="{{ kategori.nama_kategori }}" required maxlength="100">
+                                            <!-- Client Validation: atribut required dan minlength/maxlength -->
+                                            <input type="text" class="form-control" name="nama_kategori" value="{{ kategori.nama_kategori }}" required minlength="3" maxlength="100">
                                         </div>
                                         <div class="mb-3">
                                             <label class="form-label fw-semibold text-muted">Deskripsi</label>
@@ -142,8 +142,8 @@
                 <div class="modal-body">
                     <div class="mb-3">
                         <label class="form-label fw-semibold text-muted">Nama Kategori <span class="text-danger">*</span></label>
-                        <!-- Client Validation: required attr -->
-                        <input type="text" class="form-control" name="nama_kategori" required maxlength="100" placeholder="Masukkan nama kategori (contoh: Elektronik)">
+                        <!-- Client Validation: required, minlength attr -->
+                        <input type="text" class="form-control" name="nama_kategori" required minlength="3" maxlength="100" placeholder="Masukkan nama kategori (contoh: Elektronik)">
                     </div>
                     <div class="mb-3">
                         <label class="form-label fw-semibold text-muted">Deskripsi (Opsional)</label>

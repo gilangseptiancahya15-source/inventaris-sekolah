@@ -147,11 +147,13 @@
                                         <div class="row g-3">
                                             <div class="col-md-6">
                                                 <label class="form-label fw-semibold text-muted">Kode Barang <span class="text-danger">*</span></label>
-                                                <input type="text" class="form-control" name="kode_barang" value="{{ barang.kode_barang }}" required maxlength="50">
+                                                <!-- Client Validation: required, minlength, maxlength -->
+                                                <input type="text" class="form-control" name="kode_barang" value="{{ barang.kode_barang }}" required minlength="3" maxlength="50">
                                             </div>
                                             <div class="col-md-6">
                                                 <label class="form-label fw-semibold text-muted">Nama Barang <span class="text-danger">*</span></label>
-                                                <input type="text" class="form-control" name="nama_barang" value="{{ barang.nama_barang }}" required maxlength="200">
+                                                <!-- Client Validation: required, minlength, maxlength -->
+                                                <input type="text" class="form-control" name="nama_barang" value="{{ barang.nama_barang }}" required minlength="3" maxlength="200">
                                             </div>
                                             <div class="col-md-6">
                                                 <label class="form-label fw-semibold text-muted">Kategori <span class="text-danger">*</span></label>
@@ -168,7 +170,8 @@
                                             </div>
                                             <div class="col-md-4">
                                                 <label class="form-label fw-semibold text-muted">Jumlah <span class="text-danger">*</span></label>
-                                                <input type="number" class="form-control" name="jumlah" value="{{ barang.jumlah }}" required min="0">
+                                                <!-- Client Validation: required, min -->
+                                                <input type="number" class="form-control" name="jumlah" value="{{ barang.jumlah }}" required min="1">
                                             </div>
                                             <div class="col-md-4">
                                                 <label class="form-label fw-semibold text-muted">Kondisi <span class="text-danger">*</span></label>
@@ -249,11 +252,13 @@
                     <div class="row g-3">
                         <div class="col-md-6">
                             <label class="form-label fw-semibold text-muted">Kode Barang <span class="text-danger">*</span></label>
-                            <input type="text" class="form-control" name="kode_barang" required maxlength="50" placeholder="Contoh: INV-ELK-001">
+                            <!-- Client Validation -->
+                            <input type="text" class="form-control" name="kode_barang" required minlength="3" maxlength="50" placeholder="Contoh: INV-ELK-001">
                         </div>
                         <div class="col-md-6">
                             <label class="form-label fw-semibold text-muted">Nama Barang <span class="text-danger">*</span></label>
-                            <input type="text" class="form-control" name="nama_barang" required maxlength="200" placeholder="Contoh: Proyektor Epson X500">
+                            <!-- Client Validation -->
+                            <input type="text" class="form-control" name="nama_barang" required minlength="3" maxlength="200" placeholder="Contoh: Proyektor Epson X500">
                         </div>
                         <div class="col-md-6">
                             <label class="form-label fw-semibold text-muted">Kategori <span class="text-danger">*</span></label>
@@ -270,7 +275,8 @@
                         </div>
                         <div class="col-md-4">
                             <label class="form-label fw-semibold text-muted">Jumlah <span class="text-danger">*</span></label>
-                            <input type="number" class="form-control" name="jumlah" required min="0" value="1">
+                            <!-- Client Validation: min -->
+                            <input type="number" class="form-control" name="jumlah" required min="1" value="1">
                         </div>
                         <div class="col-md-4">
                             <label class="form-label fw-semibold text-muted">Kondisi <span class="text-danger">*</span></label>

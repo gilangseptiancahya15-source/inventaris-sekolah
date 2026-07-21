@@ -25,9 +25,9 @@ def add():
     nama_kategori = request.form.get('nama_kategori', '').strip()
     deskripsi = request.form.get('deskripsi', '').strip()
 
-    # Server Validation (Mencegah submit form kosong melalui inspeksi elemen)
-    if not nama_kategori:
-        flash("Nama kategori tidak boleh kosong.", "danger")
+    # Server Validation (Data kosong / Min Length)
+    if not nama_kategori or len(nama_kategori) < 3:
+        flash("Nama kategori wajib diisi dan minimal 3 karakter.", "danger")
         return redirect(url_for('kategori.index'))
 
     # Mengecek duplikasi nama kategori
@@ -56,8 +56,8 @@ def edit(id):
     deskripsi = request.form.get('deskripsi', '').strip()
 
     # Server Validation
-    if not nama_kategori:
-        flash("Nama kategori tidak boleh kosong.", "danger")
+    if not nama_kategori or len(nama_kategori) < 3:
+        flash("Nama kategori wajib diisi dan minimal 3 karakter.", "danger")
         return redirect(url_for('kategori.index'))
 
     # Cek duplikasi, tetapi abaikan ID yang sedang diedit
