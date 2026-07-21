@@ -9,13 +9,13 @@
 {% endblock %}
 
 {% block page_actions %}
-<button type="button" class="btn btn-primary fw-bold" data-bs-toggle="modal" data-bs-target="#modalTambah">
+<button type="button" class="btn btn-primary-modern btn-modern fw-bold text-white" data-bs-toggle="modal" data-bs-target="#modalTambah">
     <i class="bi bi-plus-circle me-1"></i> Tambah Barang
 </button>
 {% endblock %}
 
 {% block content %}
-<div class="card shadow-sm border-0 rounded-3">
+<div class="card card-modern hoverable">
     <div class="card-body">
         
         <!-- Filter & Search Form -->
@@ -51,7 +51,7 @@
 
                 <!-- Tombol -->
                 <div class="col-md-2 d-flex align-items-end mt-4">
-                    <button class="btn btn-primary w-100 me-1" type="submit"><i class="bi bi-filter"></i> Filter</button>
+                    <button class="btn btn-primary-modern text-white w-100 me-1" type="submit"><i class="bi bi-filter"></i> Filter</button>
                     {% if search or selected_kategori or selected_kondisi %}
                         <a href="{{ url_for('barang.index') }}" class="btn btn-outline-danger" title="Reset Filter"><i class="bi bi-x-circle-fill"></i></a>
                     {% endif %}
@@ -212,9 +212,9 @@
                                     <div class="modal-body text-start">
                                         Apakah Anda yakin ingin menghapus barang <strong>{{ barang.nama_barang }}</strong> (Kode: {{ barang.kode_barang }}) secara permanen?
                                     </div>
-                                    <div class="modal-footer bg-light">
+                                    <div class="modal-footer bg-light border-0">
                                         <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Batal</button>
-                                        <button type="submit" class="btn btn-danger fw-bold">Ya, Hapus</button>
+                                        <button type="submit" class="btn btn-primary-modern text-white fw-bold">Ya, Hapus</button>
                                     </div>
                                 </form>
                             </div>

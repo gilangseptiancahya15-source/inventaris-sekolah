@@ -1,0 +1,152 @@
+/* Variabel Tema Modern: Putih, Biru, Abu-abu */
+:root {
+    --primary-blue: #0d6efd;
+    --primary-blue-hover: #0a58ca;
+    --bg-gray: #f4f7f6;
+    --white: #ffffff;
+    --text-dark: #2b3445;
+    --text-muted: #7d879c;
+    --sidebar-width: 260px;
+}
+
+body {
+    background-color: var(--bg-gray);
+    color: var(--text-dark);
+    font-family: 'Inter', system-ui, -apple-system, sans-serif;
+}
+
+/* =========================================
+   Modern Card & Hover Effects
+========================================= */
+.card-modern {
+    background: var(--white);
+    border: none !important;
+    border-radius: 12px !important;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.04) !important;
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.card-modern.hoverable:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.08) !important;
+}
+
+/* =========================================
+   Modern Sidebar Styling
+========================================= */
+.sidebar {
+    background: var(--white);
+    box-shadow: 2px 0 20px rgba(0,0,0,0.03);
+    border-right: none;
+    z-index: 1040;
+    transition: all 0.3s ease;
+}
+.sidebar .nav-link {
+    color: var(--text-muted);
+    border-radius: 10px;
+    margin: 4px 16px;
+    padding: 10px 16px;
+    font-weight: 600;
+    font-size: 0.9rem;
+    transition: all 0.2s ease;
+}
+.sidebar .nav-link i {
+    transition: transform 0.2s;
+}
+.sidebar .nav-link:hover {
+    background-color: rgba(13, 110, 253, 0.05);
+    color: var(--primary-blue);
+}
+.sidebar .nav-link:hover i {
+    transform: scale(1.1);
+}
+.sidebar .nav-link.active {
+    background-color: var(--primary-blue);
+    color: var(--white) !important;
+    box-shadow: 0 4px 12px rgba(13, 110, 253, 0.25);
+}
+.sidebar .nav-link.active i {
+    color: var(--white) !important;
+}
+
+/* =========================================
+   Modern Navbar Styling
+========================================= */
+.navbar-modern {
+    background: var(--white) !important;
+    box-shadow: 0 2px 15px rgba(0,0,0,0.04);
+}
+.navbar-brand-modern {
+    color: var(--primary-blue) !important;
+    font-weight: 800;
+    font-size: 1.25rem;
+    padding-left: 20px;
+    letter-spacing: 0.5px;
+}
+
+/* =========================================
+   Table Hover Effect
+========================================= */
+.table-hover tbody tr {
+    transition: background-color 0.2s ease, transform 0.2s ease;
+}
+.table-hover tbody tr:hover {
+    background-color: rgba(13, 110, 253, 0.04);
+}
+
+/* =========================================
+   Modern Buttons
+========================================= */
+.btn-modern {
+    border-radius: 8px;
+    font-weight: 600;
+    padding: 8px 20px;
+    transition: all 0.2s;
+}
+.btn-primary-modern {
+    background-color: var(--primary-blue);
+    border: none;
+    box-shadow: 0 4px 10px rgba(13, 110, 253, 0.2);
+}
+.btn-primary-modern:hover {
+    background-color: var(--primary-blue-hover);
+    transform: translateY(-2px);
+    box-shadow: 0 6px 15px rgba(13, 110, 253, 0.3);
+}
+
+/* =========================================
+   Skeleton Loading Animation
+========================================= */
+.skeleton {
+    background: linear-gradient(90deg, #ececec 25%, #f8f9fa 50%, #ececec 75%);
+    background-size: 200% 100%;
+    animation: skeleton-loading 1.5s infinite;
+    border-radius: 12px;
+}
+.skeleton-text { height: 20px; width: 100%; margin-bottom: 10px; }
+.skeleton-card { height: 120px; width: 100%; }
+.skeleton-table { height: 350px; width: 100%; }
+
+@keyframes skeleton-loading {
+    0% { background-position: 200% 0; }
+    100% { background-position: -200% 0; }
+}
+
+/* =========================================
+   Full Page Loader Spinner
+========================================= */
+#page-loader {
+    position: fixed;
+    top: 0; left: 0; width: 100%; height: 100%;
+    background: var(--bg-gray);
+    z-index: 9999;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    transition: opacity 0.4s ease;
+}
+.spinner-modern {
+    width: 3rem;
+    height: 3rem;
+    color: var(--primary-blue);
+}
