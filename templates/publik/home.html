@@ -255,11 +255,72 @@
 {% endblock %}
 
 {% block scripts %}
-<!-- Render Variabel Python ke JS untuk Chart.js (gunakan window. agar bisa diakses main.js) -->
+<!-- Render Chart.js secara inline agar tidak terdampak cache JS Vercel -->
 <script>
-    window.kategoriLabel = {{ label_kategori | tojson | safe }};
-    window.kategoriData  = {{ data_kategori  | tojson | safe }};
-    window.kondisiLabel  = {{ label_kondisi  | tojson | safe }};
-    window.kondisiData   = {{ data_kondisi   | tojson | safe }};
+document.addEventListener("DOMContentLoaded", function() {
+    var kategoriLabel = {{ label_kategori | tojson | safe }};
+    var kategoriData  = {{ data_kategori  | tojson | safe }};
+    var kondisiLabel  = {{ label_kondisi  | tojson | safe }};
+    var kondisiData   = {{ data_kondisi   | tojson | safe }};
+
+    function buildChart(canvasId, config) {
+        var el = document.getElementById(canvasId);
+        if (!el) return null;
+        try {
+            return new Chart(el.getContext('2d'), config);
+        } catch (err) {
+            console.warn('[Chart] Gagal render:', canvasId, err);
+            return null;
+        }
+    }
+
+    // Chart Kategori (Bar)
+    buildChart('kategoriPublicChart', {
+        type: 'bar',
+        data: {
+            labels: kategoriLabel,
+            datasets: [{
+                label: 'Jumlah Barang',
+                data: kategoriData,
+                backgroundColor: 'rgba(13, 110, 253, 0.7)',
+                borderColor: 'rgba(13, 110, 253, 1)',
+                borderWidth: 2,
+                borderRadius: 8
+            }]
+        },
+        options: {
+            responsive: true,
+            plugins: { legend: { display: false } },
+            scales: {
+                y: { beginAtZero: true, ticks: { stepSize: 1 } },
+                x: { grid: { display: false } }
+            }
+        }
+    });
+
+    // Chart Kondisi (Doughnut)
+    var hasData = kondisiData && kondisiData.some(function(v) { return v > 0; });
+    buildChart('kondisiPublicChart', {
+        type: 'doughnut',
+        data: {
+            labels: hasData ? kondisiLabel : ['Belum Ada Data'],
+            datasets: [{
+                data: hasData ? kondisiData : [1],
+                backgroundColor: hasData ? ['#198754', '#ffc107', '#dc3545'] : ['#e9ecef'],
+                borderColor: '#ffffff',
+                borderWidth: 3,
+                hoverOffset: 6
+            }]
+        },
+        options: {
+            responsive: true,
+            cutout: '65%',
+            plugins: {
+                legend: { position: 'bottom', labels: { padding: 16, usePointStyle: true, font: { size: 12 } } },
+                tooltip: { enabled: hasData }
+            }
+        }
+    });
+});
 </script>
 {% endblock %}
