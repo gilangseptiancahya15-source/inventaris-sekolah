@@ -1,7 +1,7 @@
 from flask import Blueprint, render_template
 from utils.decorators import login_required
 from models import BarangInventaris, Kategori
-from app import db
+from extensions import db
 from sqlalchemy import func
 from datetime import datetime
 

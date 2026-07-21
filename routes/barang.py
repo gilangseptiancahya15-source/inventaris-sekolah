@@ -1,7 +1,7 @@
 from flask import Blueprint, render_template, request, redirect, url_for, flash, session
 from utils.decorators import login_required
 from models import BarangInventaris, Kategori
-from app import db
+from extensions import db
 from datetime import datetime
 from sqlalchemy import exc
 

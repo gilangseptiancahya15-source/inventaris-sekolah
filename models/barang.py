@@ -2,7 +2,7 @@ import uuid
 from datetime import datetime, timezone, date
 from sqlalchemy.dialects.postgresql import UUID
 from sqlalchemy import CheckConstraint
-from app import db
+from extensions import db
 
 class BarangInventaris(db.Model):
     __tablename__ = 'barang_inventaris'

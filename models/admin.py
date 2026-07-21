@@ -2,7 +2,7 @@ import uuid
 from datetime import datetime, timezone
 from sqlalchemy.dialects.postgresql import UUID
 from werkzeug.security import generate_password_hash, check_password_hash
-from app import db
+from extensions import db
 
 class Admin(db.Model):
     __tablename__ = 'admin'

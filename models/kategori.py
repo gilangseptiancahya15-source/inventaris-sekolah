@@ -1,7 +1,7 @@
 import uuid
 from datetime import datetime, timezone
 from sqlalchemy.dialects.postgresql import UUID
-from app import db
+from extensions import db
 
 class Kategori(db.Model):
     __tablename__ = 'kategori'

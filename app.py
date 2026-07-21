@@ -1,12 +1,7 @@
 from flask import Flask, render_template
-from flask_sqlalchemy import SQLAlchemy
 from utils.decorators import login_required
-from flask_migrate import Migrate
 from config import Config
-
-# Inisialisasi object SQLAlchemy dan Migrate (Belum terikat dengan aplikasi Flask)
-db = SQLAlchemy()
-migrate = Migrate()
+from extensions import db, migrate
 
 def create_app():
     app = Flask(__name__)

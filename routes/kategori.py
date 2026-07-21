@@ -1,7 +1,7 @@
 from flask import Blueprint, render_template, request, redirect, url_for, flash
 from utils.decorators import login_required
 from models import Kategori
-from app import db
+from extensions import db
 from sqlalchemy import exc
 
 kategori_bp = Blueprint('kategori', __name__, url_prefix='/kategori')
