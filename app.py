@@ -20,6 +20,10 @@ def create_app():
     # Menghubungkan Flask-Migrate dengan aplikasi dan database
     migrate.init_app(app, db)
 
+    # Registrasi Blueprints
+    from routes.auth import auth_bp
+    app.register_blueprint(auth_bp)
+
     @app.route('/')
     def index():
         return "<h3>Aplikasi Berjalan dan Konfigurasi Siap!</h3><p>Jika Anda melihat ini tanpa error, berarti koneksi ke Supabase sedang disiapkan secara benar.</p>"
