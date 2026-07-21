@@ -23,7 +23,8 @@
             <div class="card card-modern border-0 shadow-sm overflow-hidden h-100" style="min-height: 280px;">
                 <img src="{{ url_for('static', filename='uploads/barang/' + barang.foto_barang) }}"
                      alt="{{ barang.nama_barang }}"
-                     class="img-fluid w-100 h-100" style="object-fit:cover; max-height:350px;">
+                     class="img-fluid w-100 h-100" style="object-fit:cover; max-height:350px;"
+                     onerror="this.onerror=null; this.outerHTML='<div class=\'d-flex flex-column align-items-center justify-content-center p-5 text-center w-100 h-100\' style=\'background: linear-gradient(135deg, #f0f4ff 0%, #e8f4fd 100%);\'><i class=\'bi bi-box-seam text-primary\' style=\'font-size: 5rem; opacity: 0.3;\'></i><p class=\'text-muted mt-3 mb-0 fw-semibold\'>Gambar Tidak Tersedia</p></div>';">
             </div>
             {% else %}
             <div class="card card-modern border-0 shadow-sm h-100 d-flex align-items-center justify-content-center p-5 text-center"

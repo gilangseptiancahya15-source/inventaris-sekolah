@@ -85,7 +85,8 @@
                                  alt="Foto {{ barang.nama_barang }}"
                                  class="rounded" style="width:44px;height:44px;object-fit:cover;cursor:pointer;"
                                  data-bs-toggle="modal" data-bs-target="#modalDetail{{ barang.id }}"
-                                 title="{{ barang.nama_barang }}">
+                                 title="{{ barang.nama_barang }}"
+                                 onerror="this.onerror=null; this.outerHTML='<div class=\'rounded bg-light d-inline-flex align-items-center justify-content-center border\' style=\'width:44px;height:44px;cursor:pointer;\' data-bs-toggle=\'modal\' data-bs-target=\'#modalDetail{{ barang.id }}\'><i class=\'bi bi-image text-secondary small\'></i></div>';">
                             {% else %}
                             <div class="rounded bg-light d-inline-flex align-items-center justify-content-center border" style="width:44px;height:44px;">
                                 <i class="bi bi-image text-secondary small"></i>
@@ -133,7 +134,8 @@
                                     <div class="text-center mb-3">
                                         <img src="{{ url_for('static', filename='uploads/barang/' + barang.foto_barang) }}"
                                              alt="{{ barang.nama_barang }}"
-                                             class="img-fluid rounded shadow-sm" style="max-height:200px;object-fit:cover;">
+                                             class="img-fluid rounded shadow-sm" style="max-height:200px;object-fit:cover;"
+                                             onerror="this.onerror=null; this.outerHTML='<div class=\'d-flex flex-column align-items-center justify-content-center bg-light rounded border py-4\'><i class=\'bi bi-image text-secondary fs-1\'></i><p class=\'text-muted small mt-2 mb-0\'>Gambar Tidak Tersedia</p></div>';">
                                     </div>
                                     {% endif %}
                                     <table class="table table-borderless table-sm">
@@ -210,7 +212,8 @@
                                                 {% if barang.foto_barang %}
                                                 <div class="d-flex align-items-center gap-3 mb-2 p-2 bg-light rounded border">
                                                     <img src="{{ url_for('static', filename='uploads/barang/' + barang.foto_barang) }}"
-                                                         class="rounded" style="width:60px;height:60px;object-fit:cover;">
+                                                         class="rounded" style="width:60px;height:60px;object-fit:cover;"
+                                                         onerror="this.onerror=null; this.outerHTML='<div class=\'rounded bg-light border d-inline-flex align-items-center justify-content-center\' style=\'width:60px;height:60px;\'><i class=\'bi bi-image text-secondary\'></i></div>';">
                                                     <div>
                                                         <p class="mb-1 small fw-semibold">Foto saat ini</p>
                                                         <div class="form-check">

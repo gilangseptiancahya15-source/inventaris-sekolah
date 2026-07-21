@@ -95,7 +95,8 @@
                             {% if item.foto_barang %}
                             <img src="{{ url_for('static', filename='uploads/barang/' + item.foto_barang) }}"
                                  alt="{{ item.nama_barang }}" class="rounded"
-                                 style="width:42px;height:42px;object-fit:cover;">
+                                 style="width:42px;height:42px;object-fit:cover;"
+                                 onerror="this.onerror=null; this.outerHTML='<div class=\'rounded bg-light border d-inline-flex align-items-center justify-content-center\' style=\'width:42px;height:42px;\'><i class=\'bi bi-image text-secondary\'></i></div>';">
                             {% else %}
                             <div class="rounded bg-light border d-inline-flex align-items-center justify-content-center" style="width:42px;height:42px;">
                                 <i class="bi bi-image text-secondary"></i>

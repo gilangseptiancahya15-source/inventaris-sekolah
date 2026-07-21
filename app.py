@@ -7,6 +7,7 @@ import os
 def create_app():
     app = Flask(__name__)
     app.config.from_object(Config)
+    app.url_map.strict_slashes = False
 
     # Validasi DATABASE_URL setelah app dibuat (tidak saat import/build)
     if not app.config.get('SQLALCHEMY_DATABASE_URI'):
