@@ -78,6 +78,7 @@
                 <thead class="table-light">
                     <tr>
                         <th class="py-3 ps-4" style="width: 50px;">#</th>
+                        <th class="py-3" style="width: 60px;">Foto</th>
                         <th class="py-3">Kode Barang</th>
                         <th class="py-3">Nama Barang</th>
                         <th class="py-3">Kategori</th>
@@ -90,6 +91,17 @@
                     {% for item in pagination.items %}
                     <tr class="hoverable" style="cursor:pointer;" onclick="window.location='/inventaris/{{ item.id }}'">
                         <td class="ps-4 text-muted small">{{ loop.index + (pagination.page - 1) * pagination.per_page }}</td>
+                        <td>
+                            {% if item.foto_barang %}
+                            <img src="{{ url_for('static', filename='uploads/barang/' + item.foto_barang) }}"
+                                 alt="{{ item.nama_barang }}" class="rounded"
+                                 style="width:42px;height:42px;object-fit:cover;">
+                            {% else %}
+                            <div class="rounded bg-light border d-inline-flex align-items-center justify-content-center" style="width:42px;height:42px;">
+                                <i class="bi bi-image text-secondary"></i>
+                            </div>
+                            {% endif %}
+                        </td>
                         <td>
                             <span class="badge bg-secondary bg-opacity-15 text-dark font-monospace fw-bold px-2 py-1">
                                 {{ item.kode_barang }}

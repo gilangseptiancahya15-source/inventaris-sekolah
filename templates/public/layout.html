@@ -32,21 +32,54 @@
         
         <div class="collapse navbar-collapse" id="navbarPublic">
             <ul class="navbar-nav ms-auto mb-2 mb-lg-0 align-items-center">
-                <li class="nav-item me-2">
-                    <a class="nav-link fw-medium text-dark" href="/">Home</a>
+                <!-- Selalu tampil -->
+                <li class="nav-item me-1">
+                    <a class="nav-link fw-medium text-dark px-2" href="/">
+                        <i class="bi bi-house-door me-1"></i>Home
+                    </a>
                 </li>
-                <li class="nav-item me-2">
-                    <a class="nav-link fw-medium text-dark" href="/inventaris">Inventaris</a>
+                <li class="nav-item me-1">
+                    <a class="nav-link fw-medium text-dark px-2" href="/inventaris">
+                        <i class="bi bi-box-seam me-1"></i>Inventaris
+                    </a>
                 </li>
-                <li class="nav-item me-3">
-                    <a class="nav-link fw-medium text-dark" href="/statistik">Statistik</a>
+                <li class="nav-item me-1">
+                    <a class="nav-link fw-medium text-dark px-2" href="/statistik">
+                        <i class="bi bi-bar-chart me-1"></i>Statistik
+                    </a>
                 </li>
+
                 {% if session.get('admin_id') %}
-                <li class="nav-item">
-                    <a class="btn btn-outline-primary btn-modern px-4 fw-bold rounded-pill" href="/dashboard">Masuk ke Dasbor</a>
+                <!-- Menu ketika SUDAH login -->
+                <li class="nav-item me-1">
+                    <a class="nav-link fw-medium text-dark px-2" href="{{ url_for('dashboard') }}">
+                        <i class="bi bi-speedometer2 me-1"></i>Dashboard
+                    </a>
                 </li>
+                <li class="nav-item dropdown me-1">
+                    <a class="nav-link fw-medium text-dark px-2 dropdown-toggle" href="#" id="kelolaDrop" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                        <i class="bi bi-tools me-1"></i>Kelola
+                    </a>
+                    <ul class="dropdown-menu dropdown-menu-end shadow-sm border-0" aria-labelledby="kelolaDrop">
+                        <li><a class="dropdown-item" href="{{ url_for('kategori.index') }}"><i class="bi bi-tags me-2 text-primary"></i>Kelola Kategori</a></li>
+                        <li><a class="dropdown-item" href="{{ url_for('barang.index') }}"><i class="bi bi-box-seam me-2 text-primary"></i>Kelola Inventaris</a></li>
+                        <li><a class="dropdown-item" href="{{ url_for('laporan.index') }}"><i class="bi bi-file-earmark-text me-2 text-primary"></i>Laporan</a></li>
+                    </ul>
+                </li>
+                <li class="nav-item ms-2">
+                    <div class="d-flex align-items-center gap-2">
+                        <span class="badge bg-success bg-opacity-15 text-success border border-success border-opacity-25 rounded-pill px-2 py-1 small fw-semibold">
+                            <i class="bi bi-person-check-fill me-1"></i>{{ session.get('admin_nama', 'Admin') }}
+                        </span>
+                        <a class="btn btn-outline-danger btn-sm rounded-pill px-3 fw-bold" href="{{ url_for('auth.logout') }}">
+                            <i class="bi bi-box-arrow-right me-1"></i>Logout
+                        </a>
+                    </div>
+                </li>
+
                 {% else %}
-                <li class="nav-item">
+                <!-- Menu ketika BELUM login -->
+                <li class="nav-item ms-2">
                     <a class="btn btn-primary-modern btn-modern px-4 py-2 fw-bold text-white rounded-pill shadow-sm hoverable" href="{{ url_for('auth.login') }}">
                         <i class="bi bi-box-arrow-in-right me-1"></i> Login Admin
                     </a>
@@ -54,6 +87,7 @@
                 {% endif %}
             </ul>
         </div>
+
     </div>
 </nav>
 

@@ -21,6 +21,8 @@ class BarangInventaris(db.Model):
     kondisi = db.Column(db.String(50), nullable=False)
     lokasi = db.Column(db.String(100), nullable=True)
     tanggal_masuk = db.Column(db.Date, nullable=False, default=lambda: datetime.now(timezone.utc).date())
+    foto_barang = db.Column(db.String(255), nullable=True)  # Nama file gambar
+
     
     # Timestamps
     created_at = db.Column(db.DateTime(timezone=True), default=lambda: datetime.now(timezone.utc))

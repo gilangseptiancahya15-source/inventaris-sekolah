@@ -37,5 +37,6 @@ def login():
 def logout():
     # Menghapus seluruh data dari session
     session.clear()
-    flash("Anda telah berhasil logout.", "info")
-    return redirect(url_for('auth.login'))
+    flash("Anda berhasil logout.", "info")
+    return redirect(url_for('public.home'))
+

@@ -14,3 +14,6 @@ class Config:
         SQLALCHEMY_DATABASE_URI = SQLALCHEMY_DATABASE_URI.replace("postgres://", "postgresql://", 1)
 
     SQLALCHEMY_TRACK_MODIFICATIONS = False
+
+    # Konfigurasi Upload File Gambar (maksimal 5MB)
+    MAX_CONTENT_LENGTH = 5 * 1024 * 1024  # 5MB

@@ -17,15 +17,24 @@
     <!-- Detail Card -->
     <div class="row g-4 justify-content-center">
 
-        <!-- Placeholder Gambar Barang -->
+        <!-- Foto Barang -->
         <div class="col-md-4">
-            <div class="card card-modern border-0 shadow-sm h-100 d-flex align-items-center justify-content-center p-5 text-center"
-                 style="background: linear-gradient(135deg, #f0f4ff 0%, #e8f4fd 100%); min-height: 300px;">
-                <i class="bi bi-box-seam text-primary" style="font-size: 5rem; opacity: 0.3;"></i>
-                <p class="text-muted small mt-3 mb-0 fw-semibold">Area Foto Barang</p>
-                <span class="badge bg-secondary bg-opacity-25 text-secondary rounded-pill mt-2 small">Fitur Upload Foto Segera Hadir</span>
+            {% if barang.foto_barang %}
+            <div class="card card-modern border-0 shadow-sm overflow-hidden h-100" style="min-height: 280px;">
+                <img src="{{ url_for('static', filename='uploads/barang/' + barang.foto_barang) }}"
+                     alt="{{ barang.nama_barang }}"
+                     class="img-fluid w-100 h-100" style="object-fit:cover; max-height:350px;">
             </div>
+            {% else %}
+            <div class="card card-modern border-0 shadow-sm h-100 d-flex align-items-center justify-content-center p-5 text-center"
+                 style="background: linear-gradient(135deg, #f0f4ff 0%, #e8f4fd 100%); min-height: 280px;">
+                <i class="bi bi-box-seam text-primary" style="font-size: 5rem; opacity: 0.3;"></i>
+                <p class="text-muted small mt-3 mb-0 fw-semibold">Tidak ada foto</p>
+                <span class="badge bg-secondary bg-opacity-25 text-secondary rounded-pill mt-2 small">Belum ada gambar untuk barang ini</span>
+            </div>
+            {% endif %}
         </div>
+
 
         <!-- Info Barang -->
         <div class="col-md-8">

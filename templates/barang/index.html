@@ -65,6 +65,7 @@
                 <thead class="table-light">
                     <tr>
                         <th width="5%" class="text-center">No</th>
+                        <th width="6%" class="text-center">Foto</th>
                         <th>Kode</th>
                         <th>Nama Barang</th>
                         <th>Kategori</th>
@@ -78,6 +79,19 @@
                     {% for barang in barangs %}
                     <tr>
                         <td class="text-center text-muted">{{ loop.index }}</td>
+                        <td class="text-center">
+                            {% if barang.foto_barang %}
+                            <img src="{{ url_for('static', filename='uploads/barang/' + barang.foto_barang) }}"
+                                 alt="Foto {{ barang.nama_barang }}"
+                                 class="rounded" style="width:44px;height:44px;object-fit:cover;cursor:pointer;"
+                                 data-bs-toggle="modal" data-bs-target="#modalDetail{{ barang.id }}"
+                                 title="{{ barang.nama_barang }}">
+                            {% else %}
+                            <div class="rounded bg-light d-inline-flex align-items-center justify-content-center border" style="width:44px;height:44px;">
+                                <i class="bi bi-image text-secondary small"></i>
+                            </div>
+                            {% endif %}
+                        </td>
                         <td><span class="badge bg-secondary bg-opacity-10 text-secondary border border-secondary border-opacity-25">{{ barang.kode_barang }}</span></td>
                         <td class="fw-bold text-dark">{{ barang.nama_barang }}</td>
                         <td class="text-muted">{{ barang.kategori.nama_kategori }}</td>
@@ -115,8 +129,15 @@
                                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                                 </div>
                                 <div class="modal-body text-start">
+                                    {% if barang.foto_barang %}
+                                    <div class="text-center mb-3">
+                                        <img src="{{ url_for('static', filename='uploads/barang/' + barang.foto_barang) }}"
+                                             alt="{{ barang.nama_barang }}"
+                                             class="img-fluid rounded shadow-sm" style="max-height:200px;object-fit:cover;">
+                                    </div>
+                                    {% endif %}
                                     <table class="table table-borderless table-sm">
-                                        <tr><th width="35%" class="text-muted">Kode Barang</th><td>: <span class="fw-bold">{{ barang.kode_barang }}</span></td></tr>
+                                        <tr><th width="35%" class="text-muted">Kode Barang</th><td>: <span class="fw-bold font-monospace">{{ barang.kode_barang }}</span></td></tr>
                                         <tr><th class="text-muted">Nama Barang</th><td>: {{ barang.nama_barang }}</td></tr>
                                         <tr><th class="text-muted">Kategori</th><td>: {{ barang.kategori.nama_kategori }}</td></tr>
                                         <tr><th class="text-muted">Jumlah Stok</th><td>: {{ barang.jumlah }} unit</td></tr>
@@ -138,7 +159,7 @@
                     <div class="modal fade" id="modalEdit{{ barang.id }}" tabindex="-1" aria-hidden="true">
                         <div class="modal-dialog modal-lg">
                             <div class="modal-content border-0 shadow">
-                                <form action="{{ url_for('barang.edit', id=barang.id) }}" method="POST">
+                                <form action="{{ url_for('barang.edit', id=barang.id) }}" method="POST" enctype="multipart/form-data">
                                     <div class="modal-header bg-light">
                                         <h5 class="modal-title fw-bold"><i class="bi bi-pencil-square me-2 text-primary"></i>Edit Data Barang</h5>
                                         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
@@ -146,13 +167,12 @@
                                     <div class="modal-body text-start">
                                         <div class="row g-3">
                                             <div class="col-md-6">
-                                                <label class="form-label fw-semibold text-muted">Kode Barang <span class="text-danger">*</span></label>
-                                                <!-- Client Validation: required, minlength, maxlength -->
-                                                <input type="text" class="form-control" name="kode_barang" value="{{ barang.kode_barang }}" required minlength="3" maxlength="50">
+                                                <label class="form-label fw-semibold text-muted">Kode Barang</label>
+                                                <input type="text" class="form-control bg-light" value="{{ barang.kode_barang }}" readonly disabled title="Kode barang tidak bisa diubah">
+                                                <div class="form-text"><i class="bi bi-info-circle me-1"></i>Kode barang dibuat otomatis dan tidak dapat diubah.</div>
                                             </div>
                                             <div class="col-md-6">
                                                 <label class="form-label fw-semibold text-muted">Nama Barang <span class="text-danger">*</span></label>
-                                                <!-- Client Validation: required, minlength, maxlength -->
                                                 <input type="text" class="form-control" name="nama_barang" value="{{ barang.nama_barang }}" required minlength="3" maxlength="200">
                                             </div>
                                             <div class="col-md-6">
@@ -170,7 +190,6 @@
                                             </div>
                                             <div class="col-md-4">
                                                 <label class="form-label fw-semibold text-muted">Jumlah <span class="text-danger">*</span></label>
-                                                <!-- Client Validation: required, min -->
                                                 <input type="number" class="form-control" name="jumlah" value="{{ barang.jumlah }}" required min="1">
                                             </div>
                                             <div class="col-md-4">
@@ -184,6 +203,25 @@
                                             <div class="col-md-4">
                                                 <label class="form-label fw-semibold text-muted">Tanggal Masuk <span class="text-danger">*</span></label>
                                                 <input type="date" class="form-control" name="tanggal_masuk" value="{{ barang.tanggal_masuk.strftime('%Y-%m-%d') if barang.tanggal_masuk else '' }}" required>
+                                            </div>
+                                            <!-- Upload Foto Saat Edit -->
+                                            <div class="col-12">
+                                                <label class="form-label fw-semibold text-muted">Foto Barang</label>
+                                                {% if barang.foto_barang %}
+                                                <div class="d-flex align-items-center gap-3 mb-2 p-2 bg-light rounded border">
+                                                    <img src="{{ url_for('static', filename='uploads/barang/' + barang.foto_barang) }}"
+                                                         class="rounded" style="width:60px;height:60px;object-fit:cover;">
+                                                    <div>
+                                                        <p class="mb-1 small fw-semibold">Foto saat ini</p>
+                                                        <div class="form-check">
+                                                            <input class="form-check-input" type="checkbox" name="hapus_foto" value="1" id="hapusFoto{{ barang.id }}">
+                                                            <label class="form-check-label text-danger small" for="hapusFoto{{ barang.id }}">Hapus foto ini</label>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                {% endif %}
+                                                <input type="file" class="form-control" name="foto_barang" accept=".jpg,.jpeg,.png,.webp">
+                                                <div class="form-text">Format: JPG, JPEG, PNG, WEBP. Maks: 5MB. Upload baru akan mengganti foto lama.</div>
                                             </div>
                                             <div class="col-12">
                                                 <label class="form-label fw-semibold text-muted">Keterangan / Deskripsi Tambahan</label>
@@ -243,26 +281,27 @@
 <div class="modal fade" id="modalTambah" tabindex="-1" aria-labelledby="modalTambahLabel" aria-hidden="true">
     <div class="modal-dialog modal-lg">
         <div class="modal-content border-0 shadow">
-            <form action="{{ url_for('barang.add') }}" method="POST">
+            <form action="{{ url_for('barang.add') }}" method="POST" enctype="multipart/form-data">
                 <div class="modal-header bg-light">
                     <h5 class="modal-title fw-bold" id="modalTambahLabel"><i class="bi bi-plus-circle-fill me-2 text-primary"></i>Tambah Barang Baru</h5>
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
                 <div class="modal-body">
                     <div class="row g-3">
-                        <div class="col-md-6">
-                            <label class="form-label fw-semibold text-muted">Kode Barang <span class="text-danger">*</span></label>
-                            <!-- Client Validation -->
-                            <input type="text" class="form-control" name="kode_barang" required minlength="3" maxlength="50" placeholder="Contoh: INV-ELK-001">
+                        <!-- Preview Kode Otomatis -->
+                        <div class="col-md-12">
+                            <div class="alert alert-info border-0 p-2 d-flex align-items-center gap-2 mb-0" id="kodePreviewAlert" style="display:none!important;">
+                                <i class="bi bi-info-circle-fill"></i>
+                                <span>Kode barang: <strong id="kodePreviewValue" class="font-monospace">—</strong> (dibuat otomatis berdasarkan kategori)</span>
+                            </div>
                         </div>
                         <div class="col-md-6">
                             <label class="form-label fw-semibold text-muted">Nama Barang <span class="text-danger">*</span></label>
-                            <!-- Client Validation -->
                             <input type="text" class="form-control" name="nama_barang" required minlength="3" maxlength="200" placeholder="Contoh: Proyektor Epson X500">
                         </div>
                         <div class="col-md-6">
                             <label class="form-label fw-semibold text-muted">Kategori <span class="text-danger">*</span></label>
-                            <select class="form-select" name="kategori_id" required>
+                            <select class="form-select" name="kategori_id" id="kategoriSelectTambah" required>
                                 <option value="">-- Pilih Kategori --</option>
                                 {% for kat in kategoris %}
                                     <option value="{{ kat.id }}">{{ kat.nama_kategori }}</option>
@@ -273,9 +312,8 @@
                             <label class="form-label fw-semibold text-muted">Lokasi Penyimpanan</label>
                             <input type="text" class="form-control" name="lokasi" maxlength="100" placeholder="Contoh: Ruang Lab Komputer">
                         </div>
-                        <div class="col-md-4">
+                        <div class="col-md-2">
                             <label class="form-label fw-semibold text-muted">Jumlah <span class="text-danger">*</span></label>
-                            <!-- Client Validation: min -->
                             <input type="number" class="form-control" name="jumlah" required min="1" value="1">
                         </div>
                         <div class="col-md-4">
@@ -286,10 +324,19 @@
                                 <option value="Rusak Berat">Rusak Berat</option>
                             </select>
                         </div>
-                        <div class="col-md-4">
+                        <div class="col-md-6">
                             <label class="form-label fw-semibold text-muted">Tanggal Masuk <span class="text-danger">*</span></label>
-                            <!-- Menyiapkan nilai default hari ini menggunakan Jinja datetime -->
                             <input type="date" class="form-control" name="tanggal_masuk" required>
+                        </div>
+                        <!-- Upload Foto Barang -->
+                        <div class="col-md-6">
+                            <label class="form-label fw-semibold text-muted">Foto Barang <span class="text-muted small fw-normal">(Opsional)</span></label>
+                            <input type="file" class="form-control" name="foto_barang" id="fotoUploadTambah" accept=".jpg,.jpeg,.png,.webp">
+                            <div class="form-text">Format: JPG, JPEG, PNG, WEBP. Maks: 5MB.</div>
+                        </div>
+                        <!-- Preview foto sebelum upload -->
+                        <div class="col-12" id="fotoPreviewContainer" style="display:none;">
+                            <img id="fotoPreviewImg" src="#" alt="Preview" class="rounded border" style="max-height:120px;object-fit:cover;">
                         </div>
                         <div class="col-12">
                             <label class="form-label fw-semibold text-muted">Keterangan / Deskripsi Tambahan</label>
@@ -307,12 +354,53 @@
 </div>
 
 <script>
-    // Set default date for "Tambah Barang" Tanggal Masuk to today's date
     document.addEventListener("DOMContentLoaded", function() {
+        // Set default date untuk field Tanggal Masuk
         const dateInput = document.querySelector('#modalTambah input[type="date"]');
-        if(dateInput) {
-            const today = new Date().toISOString().split('T')[0];
-            dateInput.value = today;
+        if (dateInput) {
+            dateInput.value = new Date().toISOString().split('T')[0];
+        }
+
+        // Preview foto sebelum upload
+        const fotoInput = document.getElementById('fotoUploadTambah');
+        const previewContainer = document.getElementById('fotoPreviewContainer');
+        const previewImg = document.getElementById('fotoPreviewImg');
+        if (fotoInput) {
+            fotoInput.addEventListener('change', function() {
+                if (this.files && this.files[0]) {
+                    const reader = new FileReader();
+                    reader.onload = e => {
+                        previewImg.src = e.target.result;
+                        previewContainer.style.display = 'block';
+                    };
+                    reader.readAsDataURL(this.files[0]);
+                } else {
+                    previewContainer.style.display = 'none';
+                }
+            });
+        }
+
+        // AJAX: Preview kode otomatis berdasarkan pilihan kategori
+        const kategoriSelect = document.getElementById('kategoriSelectTambah');
+        const kodePreviewAlert = document.getElementById('kodePreviewAlert');
+        const kodePreviewValue = document.getElementById('kodePreviewValue');
+        if (kategoriSelect) {
+            kategoriSelect.addEventListener('change', function() {
+                const katId = this.value;
+                if (!katId) {
+                    kodePreviewAlert.style.display = 'none';
+                    return;
+                }
+                fetch(`/barang/kode-preview?kategori_id=${katId}`)
+                    .then(r => r.json())
+                    .then(data => {
+                        if (data.kode) {
+                            kodePreviewValue.textContent = data.kode;
+                            kodePreviewAlert.style.removeProperty('display');
+                        }
+                    })
+                    .catch(() => { kodePreviewAlert.style.display = 'none'; });
+            });
         }
     });
 </script>
