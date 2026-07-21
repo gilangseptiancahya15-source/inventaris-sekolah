@@ -139,19 +139,8 @@
                 {% endif %}
             {% endwith %}
 
-            <!-- Skeleton Loading UI -->
-            <div id="skeleton-container" class="mt-4 mb-5">
-                <div class="row g-3">
-                    <div class="col-md-3"><div class="skeleton skeleton-card"></div></div>
-                    <div class="col-md-3"><div class="skeleton skeleton-card"></div></div>
-                    <div class="col-md-3"><div class="skeleton skeleton-card"></div></div>
-                    <div class="col-md-3"><div class="skeleton skeleton-card"></div></div>
-                </div>
-                <div class="skeleton skeleton-table mt-4"></div>
-            </div>
-
-            <!-- Konten Dinamis yang Disuntikkan (Awalnya Disembunyikan oleh Script) -->
-            <div id="actual-content" class="content-container mt-4 mb-4" style="opacity: 0; transition: opacity 0.5s ease;">
+            <!-- Konten Dinamis yang Disuntikkan -->
+            <div id="actual-content" class="content-container mt-4 mb-4">
                 {% block content %}{% endblock %}
             </div>
 
