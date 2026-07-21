@@ -30,7 +30,7 @@ def home():
     label_kondisi = ['Baik', 'Rusak Ringan', 'Rusak Berat']
     data_kondisi = [baik, rusak_ringan, rusak_berat]
 
-    return render_template('public/home.html',
+    return render_template('publik/home.html',
                            total_kategori=total_kategori,
                            total_barang=total_barang,
                            baik=baik,
@@ -70,7 +70,7 @@ def inventaris():
     # Untuk dropdown filter
     kategori_list = Kategori.query.order_by(Kategori.nama_kategori.asc()).all()
 
-    return render_template('public/inventaris.html', 
+    return render_template('publik/inventaris.html', 
                            pagination=pagination, 
                            kategori_list=kategori_list,
                            search=search,
@@ -80,7 +80,7 @@ def inventaris():
 @public_bp.route('/inventaris/<id>')
 def detail(id):
     barang = BarangInventaris.query.get_or_404(id)
-    return render_template('public/detail.html', barang=barang)
+    return render_template('publik/detail.html', barang=barang)
 
 @public_bp.route('/statistik')
 def statistik():
@@ -101,7 +101,7 @@ def statistik():
     label_kondisi = ['Baik', 'Rusak Ringan', 'Rusak Berat']
     data_kondisi = [baik, rusak_ringan, rusak_berat]
 
-    return render_template('public/statistik.html',
+    return render_template('publik/statistik.html',
                            label_kategori=label_kategori,
                            data_kategori=data_kategori,
                            label_kondisi=label_kondisi,
