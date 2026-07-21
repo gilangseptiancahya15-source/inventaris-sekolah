@@ -113,4 +113,147 @@ document.addEventListener("DOMContentLoaded", function () {
             }
         });
     }
+
+    // 8. Animasi Counter (untuk halaman publik: statistik card)
+    function animateCounter(el) {
+        const target = parseInt(el.getAttribute('data-target'), 10) || 0;
+        const duration = 1200; // ms
+        const step = Math.ceil(duration / (target || 1));
+        let current = 0;
+        const timer = setInterval(() => {
+            current += Math.ceil(target / (duration / 16));
+            if (current >= target) {
+                current = target;
+                clearInterval(timer);
+            }
+            el.textContent = current.toLocaleString('id-ID');
+        }, 16);
+    }
+
+    const counterEls = document.querySelectorAll('.counter[data-target]');
+    if (counterEls.length > 0) {
+        // Gunakan Intersection Observer agar animasi mulai saat elemen terlihat layar
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting && !entry.target.dataset.animated) {
+                    entry.target.dataset.animated = 'true';
+                    animateCounter(entry.target);
+                }
+            });
+        }, { threshold: 0.5 });
+        counterEls.forEach(el => observer.observe(el));
+    }
+
+    // 9. Aktifkan nav link publik berdasarkan URL aktif
+    const pubNavLinks = document.querySelectorAll('#navbarPublic .nav-link');
+    pubNavLinks.forEach(link => {
+        const href = link.getAttribute('href');
+        if (href && window.location.pathname === href) {
+            link.classList.add('text-primary', 'fw-bold');
+        }
+    });
+
+    // 10. Inisialisasi Chart.js untuk halaman publik (home & statistik)
+    // Grafik Kategori Publik (Home Page - Bar Chart)
+    const kategoriPublicCtx = document.getElementById('kategoriPublicChart');
+    if (kategoriPublicCtx && typeof kategoriLabel !== 'undefined') {
+        new Chart(kategoriPublicCtx, {
+            type: 'bar',
+            data: {
+                labels: kategoriLabel,
+                datasets: [{
+                    label: 'Jumlah Barang',
+                    data: kategoriData,
+                    backgroundColor: 'rgba(13, 110, 253, 0.75)',
+                    borderColor: 'rgba(13, 110, 253, 1)',
+                    borderWidth: 2,
+                    borderRadius: 8,
+                    borderSkipped: false,
+                }]
+            },
+            options: {
+                responsive: true,
+                plugins: { legend: { display: false } },
+                scales: {
+                    y: { beginAtZero: true, ticks: { stepSize: 1 }, grid: { color: '#f0f0f0' } },
+                    x: { grid: { display: false } }
+                }
+            }
+        });
+    }
+
+    // Grafik Kondisi Publik (Home Page - Doughnut Chart)
+    const kondisiPublicCtx = document.getElementById('kondisiPublicChart');
+    if (kondisiPublicCtx && typeof kondisiLabel !== 'undefined') {
+        new Chart(kondisiPublicCtx, {
+            type: 'doughnut',
+            data: {
+                labels: kondisiLabel,
+                datasets: [{
+                    data: kondisiData,
+                    backgroundColor: ['#198754', '#ffc107', '#dc3545'],
+                    borderColor: ['#fff', '#fff', '#fff'],
+                    borderWidth: 3,
+                    hoverOffset: 6
+                }]
+            },
+            options: {
+                responsive: true,
+                cutout: '65%',
+                plugins: {
+                    legend: { position: 'bottom', labels: { padding: 20, usePointStyle: true } }
+                }
+            }
+        });
+    }
+
+    // Grafik Kategori Statistik Page (Bar Chart - horizontal feel)
+    const kategoriBarCtx = document.getElementById('kategoriBarChart');
+    if (kategoriBarCtx && typeof kategoriLabel !== 'undefined') {
+        new Chart(kategoriBarCtx, {
+            type: 'bar',
+            data: {
+                labels: kategoriLabel,
+                datasets: [{
+                    label: 'Jumlah Barang',
+                    data: kategoriData,
+                    backgroundColor: kategoriData.map((_, i) => `hsl(${210 + i * 30}, 70%, 55%)`),
+                    borderRadius: 8,
+                    borderSkipped: false,
+                }]
+            },
+            options: {
+                indexAxis: 'y',
+                responsive: true,
+                plugins: { legend: { display: false } },
+                scales: {
+                    x: { beginAtZero: true, ticks: { stepSize: 1 }, grid: { color: '#f0f0f0' } },
+                    y: { grid: { display: false } }
+                }
+            }
+        });
+    }
+
+    // Grafik Kondisi Statistik Page (Doughnut Chart)
+    const kondisiDoughnutCtx = document.getElementById('kondisiDoughnutChart');
+    if (kondisiDoughnutCtx && typeof kondisiLabel !== 'undefined') {
+        new Chart(kondisiDoughnutCtx, {
+            type: 'doughnut',
+            data: {
+                labels: kondisiLabel,
+                datasets: [{
+                    data: kondisiData,
+                    backgroundColor: ['#198754', '#ffc107', '#dc3545'],
+                    borderColor: ['#fff', '#fff', '#fff'],
+                    borderWidth: 3,
+                    hoverOffset: 6
+                }]
+            },
+            options: {
+                responsive: true,
+                cutout: '65%',
+                plugins: { legend: { display: false } }
+            }
+        });
+    }
 });

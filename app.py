@@ -21,15 +21,17 @@ def create_app():
     from routes.kategori import kategori_bp
     from routes.barang import barang_bp
     from routes.laporan import laporan_bp
+    from routes.public import public_bp
     
     app.register_blueprint(auth_bp)
     app.register_blueprint(kategori_bp)
     app.register_blueprint(barang_bp)
     app.register_blueprint(laporan_bp)
+    app.register_blueprint(public_bp)
 
-    @app.route('/')
+    @app.route('/dashboard')
     @login_required
-    def index():
+    def dashboard():
         from models import Kategori, BarangInventaris
         
         # Statistik Card Data

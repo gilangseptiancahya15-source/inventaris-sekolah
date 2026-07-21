@@ -1,0 +1,110 @@
+{% extends "public/layout.html" %}
+
+{% block title %}Detail Barang - {{ barang.nama_barang }}{% endblock %}
+
+{% block content %}
+<div class="container py-5">
+
+    <!-- Breadcrumb -->
+    <nav aria-label="breadcrumb" class="mb-4">
+        <ol class="breadcrumb bg-white p-2 px-3 rounded-pill card-modern shadow-sm" style="font-size: 0.85rem; width: fit-content;">
+            <li class="breadcrumb-item"><a href="/" class="text-decoration-none text-primary fw-semibold"><i class="bi bi-house-door-fill me-1"></i>Home</a></li>
+            <li class="breadcrumb-item"><a href="/inventaris" class="text-decoration-none text-primary fw-semibold">Inventaris</a></li>
+            <li class="breadcrumb-item active text-muted">{{ barang.nama_barang }}</li>
+        </ol>
+    </nav>
+
+    <!-- Detail Card -->
+    <div class="row g-4 justify-content-center">
+
+        <!-- Placeholder Gambar Barang -->
+        <div class="col-md-4">
+            <div class="card card-modern border-0 shadow-sm h-100 d-flex align-items-center justify-content-center p-5 text-center"
+                 style="background: linear-gradient(135deg, #f0f4ff 0%, #e8f4fd 100%); min-height: 300px;">
+                <i class="bi bi-box-seam text-primary" style="font-size: 5rem; opacity: 0.3;"></i>
+                <p class="text-muted small mt-3 mb-0 fw-semibold">Area Foto Barang</p>
+                <span class="badge bg-secondary bg-opacity-25 text-secondary rounded-pill mt-2 small">Fitur Upload Foto Segera Hadir</span>
+            </div>
+        </div>
+
+        <!-- Info Barang -->
+        <div class="col-md-8">
+            <div class="card card-modern border-0 shadow-sm">
+                <div class="card-header bg-white border-bottom border-secondary-subtle py-3 px-4 d-flex justify-content-between align-items-center">
+                    <h5 class="mb-0 fw-bold text-dark">
+                        <i class="bi bi-info-circle-fill text-primary me-2"></i>
+                        Informasi Lengkap Barang
+                    </h5>
+                    {% if barang.kondisi == 'Baik' %}
+                        <span class="badge bg-success fs-6 rounded-pill px-3">Baik</span>
+                    {% elif barang.kondisi == 'Rusak Ringan' %}
+                        <span class="badge bg-warning text-dark fs-6 rounded-pill px-3">Rusak Ringan</span>
+                    {% else %}
+                        <span class="badge bg-danger fs-6 rounded-pill px-3">Rusak Berat</span>
+                    {% endif %}
+                </div>
+                <div class="card-body p-0">
+                    <table class="table table-borderless mb-0">
+                        <tbody>
+                            <tr class="border-bottom border-secondary-subtle">
+                                <td class="py-3 ps-4 text-muted fw-semibold small text-uppercase" style="width: 40%;">
+                                    <i class="bi bi-qr-code me-2"></i>Kode Barang
+                                </td>
+                                <td class="py-3 fw-bold font-monospace text-dark">{{ barang.kode_barang }}</td>
+                            </tr>
+                            <tr class="border-bottom border-secondary-subtle">
+                                <td class="py-3 ps-4 text-muted fw-semibold small text-uppercase">
+                                    <i class="bi bi-tag me-2"></i>Nama Barang
+                                </td>
+                                <td class="py-3 fw-semibold text-dark">{{ barang.nama_barang }}</td>
+                            </tr>
+                            <tr class="border-bottom border-secondary-subtle">
+                                <td class="py-3 ps-4 text-muted fw-semibold small text-uppercase">
+                                    <i class="bi bi-tags me-2"></i>Kategori
+                                </td>
+                                <td class="py-3 text-dark">{{ barang.kategori.nama_kategori }}</td>
+                            </tr>
+                            <tr class="border-bottom border-secondary-subtle">
+                                <td class="py-3 ps-4 text-muted fw-semibold small text-uppercase">
+                                    <i class="bi bi-123 me-2"></i>Jumlah
+                                </td>
+                                <td class="py-3 fw-bold text-dark">
+                                    {{ barang.jumlah }} <span class="text-muted fw-normal small">unit</span>
+                                </td>
+                            </tr>
+                            <tr class="border-bottom border-secondary-subtle">
+                                <td class="py-3 ps-4 text-muted fw-semibold small text-uppercase">
+                                    <i class="bi bi-geo-alt me-2"></i>Lokasi
+                                </td>
+                                <td class="py-3 text-dark">{{ barang.lokasi or '-' }}</td>
+                            </tr>
+                            <tr class="border-bottom border-secondary-subtle">
+                                <td class="py-3 ps-4 text-muted fw-semibold small text-uppercase">
+                                    <i class="bi bi-calendar-event me-2"></i>Tanggal Masuk
+                                </td>
+                                <td class="py-3 text-dark">
+                                    {{ barang.tanggal_masuk.strftime('%d %B %Y') if barang.tanggal_masuk else '-' }}
+                                </td>
+                            </tr>
+                            <tr>
+                                <td class="py-3 ps-4 text-muted fw-semibold small text-uppercase">
+                                    <i class="bi bi-card-text me-2"></i>Keterangan
+                                </td>
+                                <td class="py-3 text-dark text-muted">
+                                    {{ barang.deskripsi or 'Tidak ada keterangan.' }}
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+                <div class="card-footer bg-light border-top border-secondary-subtle py-3 px-4 text-muted small d-flex justify-content-between">
+                    <span><i class="bi bi-clock me-1"></i>Ditambahkan: {{ barang.created_at.strftime('%d %b %Y, %H:%M') if barang.created_at else '-' }}</span>
+                    <a href="/inventaris" class="btn btn-sm btn-outline-secondary rounded-pill hoverable">
+                        <i class="bi bi-arrow-left me-1"></i>Kembali
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

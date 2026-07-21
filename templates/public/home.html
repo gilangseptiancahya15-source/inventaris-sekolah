@@ -1,0 +1,266 @@
+{% extends "public/layout.html" %}
+
+{% block content %}
+<!-- Hero Section -->
+<section class="py-5 bg-white position-relative overflow-hidden" style="background-image: linear-gradient(180deg, rgba(255,255,255,0) 0%, #f4f7f6 100%);">
+    <div class="container py-5 mt-4 position-relative z-1">
+        <div class="row align-items-center justify-content-center text-center">
+            <div class="col-lg-8">
+                <div class="d-inline-flex align-items-center px-3 py-1 bg-primary bg-opacity-10 text-primary fw-bold rounded-pill mb-4" style="font-size: 0.85rem;">
+                    <span class="spinner-grow spinner-grow-sm me-2 text-primary" role="status" aria-hidden="true"></span>
+                    Sistem Terintegrasi v1.0
+                </div>
+                <h1 class="display-4 fw-bolder text-dark mb-4" style="letter-spacing: -1.5px;">
+                    Sistem Informasi <br>
+                    <span class="text-primary">Inventaris</span> Sekolah
+                </h1>
+                <p class="lead text-secondary mb-5 px-md-5 mx-md-4 fw-normal">
+                    Platform digital cerdas untuk mencatat, melacak, dan mengelola seluruh aset fasilitas sekolah dengan sangat mudah, aman, dan dapat diakses dari mana saja secara real-time.
+                </p>
+                <div class="d-flex justify-content-center gap-3 flex-wrap">
+                    <a href="/inventaris" class="btn btn-outline-primary btn-modern btn-lg px-5 py-3 fw-bold shadow-sm rounded-pill hoverable">
+                        Lihat Inventaris
+                    </a>
+                    {% if session.get('admin_id') %}
+                    <a href="/dashboard" class="btn btn-primary-modern btn-modern btn-lg px-5 py-3 fw-bold text-white shadow-sm hoverable rounded-pill">
+                        Masuk Dasbor
+                    </a>
+                    {% else %}
+                    <a href="{{ url_for('auth.login') }}" class="btn btn-primary-modern btn-modern btn-lg px-5 py-3 fw-bold text-white shadow-sm hoverable rounded-pill">
+                        Login Admin <i class="bi bi-arrow-right ms-2"></i>
+                    </a>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Tentang Sistem -->
+<section class="py-5 bg-white border-bottom border-secondary-subtle">
+    <div class="container">
+        <div class="row justify-content-center text-center">
+            <div class="col-lg-8">
+                <h6 class="text-uppercase fw-bold text-primary tracking-wide mb-3">Tentang Sistem</h6>
+                <h3 class="fw-bold text-dark mb-4">Pengelolaan Logistik Berbasis Cloud</h3>
+                <p class="text-muted">Aplikasi Inventaris Sekolah dibangun untuk memastikan transparansi dan keakuratan data sarana prasarana. Melalui sistem terpusat ini, proses pendataan barang masuk, barang keluar, hingga pelaporan barang rusak dapat dilakukan dengan cepat tanpa bergantung pada catatan kertas manual.</p>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Statistik Inventaris -->
+<section class="py-5 bg-light">
+    <div class="container">
+        <div class="text-center mb-5">
+            <h6 class="text-uppercase fw-bold text-primary tracking-wide">Ringkasan Data</h6>
+            <h2 class="fw-bold text-dark">Statistik Inventaris</h2>
+        </div>
+        <div class="row g-4 justify-content-center">
+            <div class="col-md-4 col-lg-2">
+                <div class="card card-modern border-0 h-100 hoverable text-center p-3 shadow-sm">
+                    <div class="card-body p-0">
+                        <i class="bi bi-box-seam fs-1 text-primary mb-2"></i>
+                        <h3 class="fw-bold text-dark counter" data-target="{{ total_barang }}">0</h3>
+                        <p class="text-muted small mb-0 fw-semibold">Total Barang</p>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-4 col-lg-2">
+                <div class="card card-modern border-0 h-100 hoverable text-center p-3 shadow-sm">
+                    <div class="card-body p-0">
+                        <i class="bi bi-tags fs-1 text-info mb-2"></i>
+                        <h3 class="fw-bold text-dark counter" data-target="{{ total_kategori }}">0</h3>
+                        <p class="text-muted small mb-0 fw-semibold">Kategori</p>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-4 col-lg-2">
+                <div class="card card-modern border-0 h-100 hoverable text-center p-3 shadow-sm">
+                    <div class="card-body p-0">
+                        <i class="bi bi-check-circle fs-1 text-success mb-2"></i>
+                        <h3 class="fw-bold text-success counter" data-target="{{ baik }}">0</h3>
+                        <p class="text-muted small mb-0 fw-semibold">Kondisi Baik</p>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-4 col-lg-2">
+                <div class="card card-modern border-0 h-100 hoverable text-center p-3 shadow-sm">
+                    <div class="card-body p-0">
+                        <i class="bi bi-exclamation-triangle fs-1 text-warning mb-2"></i>
+                        <h3 class="fw-bold text-warning counter" data-target="{{ rusak_ringan }}">0</h3>
+                        <p class="text-muted small mb-0 fw-semibold">Rusak Ringan</p>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-4 col-lg-2">
+                <div class="card card-modern border-0 h-100 hoverable text-center p-3 shadow-sm">
+                    <div class="card-body p-0">
+                        <i class="bi bi-x-circle fs-1 text-danger mb-2"></i>
+                        <h3 class="fw-bold text-danger counter" data-target="{{ rusak_berat }}">0</h3>
+                        <p class="text-muted small mb-0 fw-semibold">Rusak Berat</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Grafik Inventaris -->
+<section class="py-5 bg-white">
+    <div class="container">
+        <div class="text-center mb-5">
+            <h6 class="text-uppercase fw-bold text-primary tracking-wide">Visualisasi Data</h6>
+            <h2 class="fw-bold text-dark">Grafik Inventaris</h2>
+        </div>
+        <div class="row g-4 justify-content-center">
+            <div class="col-lg-6">
+                <div class="card card-modern border-0 shadow-sm h-100 p-4">
+                    <h5 class="fw-bold text-center mb-4">Jumlah Barang Berdasarkan Kategori</h5>
+                    <canvas id="kategoriPublicChart" style="max-height: 300px;"></canvas>
+                </div>
+            </div>
+            <div class="col-lg-6">
+                <div class="card card-modern border-0 shadow-sm h-100 p-4">
+                    <h5 class="fw-bold text-center mb-4">Persentase Kondisi Barang</h5>
+                    <canvas id="kondisiPublicChart" style="max-height: 300px;"></canvas>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Inventaris Terbaru -->
+<section class="py-5 bg-light">
+    <div class="container">
+        <div class="d-flex justify-content-between align-items-end mb-4">
+            <div>
+                <h6 class="text-uppercase fw-bold text-primary tracking-wide">Pembaruan Sistem</h6>
+                <h2 class="fw-bold text-dark mb-0">Inventaris Terbaru</h2>
+            </div>
+            <a href="/inventaris" class="btn btn-outline-primary btn-sm rounded-pill px-3 fw-bold hoverable">Lihat Semua</a>
+        </div>
+        
+        <div class="card card-modern border-0 shadow-sm overflow-hidden">
+            <div class="table-responsive">
+                <table class="table table-hover align-middle mb-0">
+                    <thead class="table-light">
+                        <tr>
+                            <th class="py-3 px-4">Kode Barang</th>
+                            <th class="py-3 px-4">Nama Barang</th>
+                            <th class="py-3 px-4">Kategori</th>
+                            <th class="py-3 px-4">Lokasi</th>
+                            <th class="py-3 px-4">Kondisi</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for item in recent_items %}
+                        <tr>
+                            <td class="px-4"><span class="badge bg-secondary font-monospace">{{ item.kode_barang }}</span></td>
+                            <td class="px-4 fw-medium text-dark">{{ item.nama_barang }}</td>
+                            <td class="px-4">{{ item.kategori.nama_kategori }}</td>
+                            <td class="px-4">{{ item.lokasi }}</td>
+                            <td class="px-4">
+                                {% if item.kondisi == 'Baik' %}
+                                    <span class="badge bg-success rounded-pill px-3 shadow-sm">Baik</span>
+                                {% elif item.kondisi == 'Rusak Ringan' %}
+                                    <span class="badge bg-warning text-dark rounded-pill px-3 shadow-sm">Rusak Ringan</span>
+                                {% else %}
+                                    <span class="badge bg-danger rounded-pill px-3 shadow-sm">Rusak Berat</span>
+                                {% endif %}
+                            </td>
+                        </tr>
+                        {% else %}
+                        <tr><td colspan="5" class="text-center py-4 text-muted">Belum ada data barang.</td></tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Fitur Sistem -->
+<section class="py-5 bg-white">
+    <div class="container pb-4">
+        <div class="text-center mb-5">
+            <h6 class="text-uppercase fw-bold text-primary tracking-wide">Mengapa Memilih Kami?</h6>
+            <h2 class="fw-bold text-dark">Fitur Utama Sistem</h2>
+        </div>
+        <div class="row g-4 justify-content-center">
+            <div class="col-md-3">
+                <div class="card card-modern border-0 h-100 hoverable bg-light shadow-sm p-4 text-center">
+                    <i class="bi bi-box-seam fs-1 text-primary mb-3"></i>
+                    <h5 class="fw-bold text-dark mb-2">Manajemen Inventaris</h5>
+                    <p class="text-muted small mb-0">Pencatatan aset masuk, pindah, atau rusak secara real-time.</p>
+                </div>
+            </div>
+            <div class="col-md-3">
+                <div class="card card-modern border-0 h-100 hoverable bg-light shadow-sm p-4 text-center">
+                    <i class="bi bi-tags fs-1 text-info mb-3"></i>
+                    <h5 class="fw-bold text-dark mb-2">Kategori Barang</h5>
+                    <p class="text-muted small mb-0">Pengelompokan barang cerdas mempermudah pencarian.</p>
+                </div>
+            </div>
+            <div class="col-md-3">
+                <div class="card card-modern border-0 h-100 hoverable bg-light shadow-sm p-4 text-center">
+                    <i class="bi bi-pie-chart fs-1 text-warning mb-3"></i>
+                    <h5 class="fw-bold text-dark mb-2">Dashboard Statistik</h5>
+                    <p class="text-muted small mb-0">Analisis visual data inventaris sekolah berbasis Chart.js.</p>
+                </div>
+            </div>
+            <div class="col-md-3">
+                <div class="card card-modern border-0 h-100 hoverable bg-light shadow-sm p-4 text-center">
+                    <i class="bi bi-file-earmark-text fs-1 text-danger mb-3"></i>
+                    <h5 class="fw-bold text-dark mb-2">Laporan Inventaris</h5>
+                    <p class="text-muted small mb-0">Pembuatan laporan rekapitulasi data siap cetak (Print).</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Teknologi -->
+<section class="py-4 bg-light border-top border-secondary-subtle">
+    <div class="container text-center">
+        <p class="text-muted small fw-bold text-uppercase tracking-wide mb-4">Didukung Oleh Teknologi Cloud Modern</p>
+        <div class="d-flex justify-content-center align-items-center flex-wrap gap-4 opacity-75">
+            <div class="d-flex flex-column align-items-center mx-3">
+                <i class="bi bi-filetype-py fs-1 text-dark"></i>
+                <span class="small fw-semibold mt-1">Python</span>
+            </div>
+            <div class="d-flex flex-column align-items-center mx-3">
+                <i class="bi bi-cup-hot-fill fs-1 text-dark"></i>
+                <span class="small fw-semibold mt-1">Flask</span>
+            </div>
+            <div class="d-flex flex-column align-items-center mx-3">
+                <i class="bi bi-database-fill fs-1 text-dark"></i>
+                <span class="small fw-semibold mt-1">PostgreSQL</span>
+            </div>
+            <div class="d-flex flex-column align-items-center mx-3">
+                <i class="bi bi-bootstrap-fill fs-1 text-primary"></i>
+                <span class="small fw-semibold mt-1">Bootstrap 5</span>
+            </div>
+            <div class="d-flex flex-column align-items-center mx-3">
+                <i class="bi bi-bar-chart-fill fs-1 text-warning"></i>
+                <span class="small fw-semibold mt-1">Chart.js</span>
+            </div>
+            <div class="d-flex flex-column align-items-center mx-3">
+                <i class="bi bi-cloud-arrow-up-fill fs-1 text-dark"></i>
+                <span class="small fw-semibold mt-1">Vercel</span>
+            </div>
+        </div>
+    </div>
+</section>
+{% endblock %}
+
+{% block scripts %}
+<!-- Render Variabel Python ke JS untuk Chart.js -->
+<script>
+    const kategoriLabel = {{ label_kategori | tojson | safe }};
+    const kategoriData = {{ data_kategori | tojson | safe }};
+    
+    const kondisiLabel = {{ label_kondisi | tojson | safe }};
+    const kondisiData = {{ data_kondisi | tojson | safe }};
+</script>
+{% endblock %}

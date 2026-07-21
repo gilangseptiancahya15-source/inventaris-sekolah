@@ -7,7 +7,7 @@ auth_bp = Blueprint('auth', __name__, url_prefix='/auth')
 def login():
     # Jika admin sudah login, tidak perlu login lagi, langsung arahkan ke index/dashboard
     if 'admin_id' in session:
-        return redirect(url_for('index'))
+        return redirect(url_for('dashboard'))
 
     if request.method == 'POST':
         email = request.form.get('email')
@@ -25,7 +25,7 @@ def login():
             
             # Buat Flash Message untuk notifikasi sukses
             flash("Berhasil login! Selamat datang, " + admin.nama, "success")
-            return redirect(url_for('index'))
+            return redirect(url_for('dashboard'))
         else:
             # Flash Message untuk notifikasi error
             flash("Email atau password yang Anda masukkan salah.", "danger")
