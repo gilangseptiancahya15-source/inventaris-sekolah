@@ -1,0 +1,313 @@
+{% extends 'base.html' %}
+
+{% block title %}Barang Inventaris{% endblock %}
+{% block nav_barang %}active{% endblock %}
+{% block page_title %}Manajemen Barang Inventaris{% endblock %}
+
+{% block breadcrumb %}
+    <li class="breadcrumb-item active" aria-current="page">Barang Inventaris</li>
+{% endblock %}
+
+{% block page_actions %}
+<button type="button" class="btn btn-primary fw-bold" data-bs-toggle="modal" data-bs-target="#modalTambah">
+    <i class="bi bi-plus-circle me-1"></i> Tambah Barang
+</button>
+{% endblock %}
+
+{% block content %}
+<div class="card shadow-sm border-0 rounded-3">
+    <div class="card-body">
+        
+        <!-- Filter & Search Form -->
+        <form action="{{ url_for('barang.index') }}" method="GET" class="mb-4 bg-light p-3 rounded border">
+            <div class="row g-2 align-items-center">
+                <!-- Search Box -->
+                <div class="col-md-4">
+                    <label class="form-label small text-muted fw-bold mb-1">Pencarian</label>
+                    <input type="text" class="form-control" name="search" placeholder="Nama / Kode Barang..." value="{{ search }}">
+                </div>
+                
+                <!-- Filter Kategori -->
+                <div class="col-md-3">
+                    <label class="form-label small text-muted fw-bold mb-1">Kategori</label>
+                    <select class="form-select" name="kategori">
+                        <option value="">-- Semua Kategori --</option>
+                        {% for kat in kategoris %}
+                            <option value="{{ kat.id }}" {% if selected_kategori == (kat.id|string) %}selected{% endif %}>{{ kat.nama_kategori }}</option>
+                        {% endfor %}
+                    </select>
+                </div>
+                
+                <!-- Filter Kondisi -->
+                <div class="col-md-3">
+                    <label class="form-label small text-muted fw-bold mb-1">Kondisi</label>
+                    <select class="form-select" name="kondisi">
+                        <option value="">-- Semua Kondisi --</option>
+                        <option value="Baik" {% if selected_kondisi == 'Baik' %}selected{% endif %}>Baik</option>
+                        <option value="Rusak Ringan" {% if selected_kondisi == 'Rusak Ringan' %}selected{% endif %}>Rusak Ringan</option>
+                        <option value="Rusak Berat" {% if selected_kondisi == 'Rusak Berat' %}selected{% endif %}>Rusak Berat</option>
+                    </select>
+                </div>
+
+                <!-- Tombol -->
+                <div class="col-md-2 d-flex align-items-end mt-4">
+                    <button class="btn btn-primary w-100 me-1" type="submit"><i class="bi bi-filter"></i> Filter</button>
+                    {% if search or selected_kategori or selected_kondisi %}
+                        <a href="{{ url_for('barang.index') }}" class="btn btn-outline-danger" title="Reset Filter"><i class="bi bi-x-circle-fill"></i></a>
+                    {% endif %}
+                </div>
+            </div>
+        </form>
+
+        <!-- Tabel List Barang -->
+        <div class="table-responsive">
+            <table class="table table-hover align-middle border text-nowrap">
+                <thead class="table-light">
+                    <tr>
+                        <th width="5%" class="text-center">No</th>
+                        <th>Kode</th>
+                        <th>Nama Barang</th>
+                        <th>Kategori</th>
+                        <th class="text-center">Qty</th>
+                        <th>Kondisi</th>
+                        <th>Lokasi</th>
+                        <th class="text-center">Aksi</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for barang in barangs %}
+                    <tr>
+                        <td class="text-center text-muted">{{ loop.index }}</td>
+                        <td><span class="badge bg-secondary bg-opacity-10 text-secondary border border-secondary border-opacity-25">{{ barang.kode_barang }}</span></td>
+                        <td class="fw-bold text-dark">{{ barang.nama_barang }}</td>
+                        <td class="text-muted">{{ barang.kategori.nama_kategori }}</td>
+                        <td class="text-center fw-bold">{{ barang.jumlah }}</td>
+                        <td>
+                            {% if barang.kondisi == 'Baik' %}
+                                <span class="badge bg-success bg-opacity-10 text-success border border-success border-opacity-25">Baik</span>
+                            {% elif barang.kondisi == 'Rusak Ringan' %}
+                                <span class="badge bg-warning bg-opacity-10 text-warning border border-warning border-opacity-25">Rusak Ringan</span>
+                            {% else %}
+                                <span class="badge bg-danger bg-opacity-10 text-danger border border-danger border-opacity-25">Rusak Berat</span>
+                            {% endif %}
+                        </td>
+                        <td class="text-muted">{{ barang.lokasi or '-' }}</td>
+                        <td class="text-center">
+                            <!-- Tombol Detail, Edit & Hapus -->
+                            <button class="btn btn-sm btn-outline-info me-1" data-bs-toggle="modal" data-bs-target="#modalDetail{{ barang.id }}" title="Detail Lengkap">
+                                <i class="bi bi-eye"></i>
+                            </button>
+                            <button class="btn btn-sm btn-outline-primary me-1" data-bs-toggle="modal" data-bs-target="#modalEdit{{ barang.id }}" title="Edit Data">
+                                <i class="bi bi-pencil-square"></i>
+                            </button>
+                            <button class="btn btn-sm btn-outline-danger" data-bs-toggle="modal" data-bs-target="#modalHapus{{ barang.id }}" title="Hapus Barang">
+                                <i class="bi bi-trash"></i>
+                            </button>
+                        </td>
+                    </tr>
+
+                    <!-- Modal Detail -->
+                    <div class="modal fade" id="modalDetail{{ barang.id }}" tabindex="-1" aria-hidden="true">
+                        <div class="modal-dialog">
+                            <div class="modal-content border-0 shadow">
+                                <div class="modal-header bg-light">
+                                    <h5 class="modal-title fw-bold"><i class="bi bi-info-circle me-2 text-info"></i>Detail Barang</h5>
+                                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                </div>
+                                <div class="modal-body text-start">
+                                    <table class="table table-borderless table-sm">
+                                        <tr><th width="35%" class="text-muted">Kode Barang</th><td>: <span class="fw-bold">{{ barang.kode_barang }}</span></td></tr>
+                                        <tr><th class="text-muted">Nama Barang</th><td>: {{ barang.nama_barang }}</td></tr>
+                                        <tr><th class="text-muted">Kategori</th><td>: {{ barang.kategori.nama_kategori }}</td></tr>
+                                        <tr><th class="text-muted">Jumlah Stok</th><td>: {{ barang.jumlah }} unit</td></tr>
+                                        <tr><th class="text-muted">Kondisi</th><td>: {{ barang.kondisi }}</td></tr>
+                                        <tr><th class="text-muted">Lokasi</th><td>: {{ barang.lokasi or '-' }}</td></tr>
+                                        <tr><th class="text-muted">Tanggal Masuk</th><td>: {{ barang.tanggal_masuk.strftime('%d %B %Y') if barang.tanggal_masuk else '-' }}</td></tr>
+                                        <tr><th class="text-muted">Keterangan</th><td>: {{ barang.deskripsi or '-' }}</td></tr>
+                                        <tr><th class="text-muted">Ditambahkan Oleh</th><td>: {{ barang.admin.nama if barang.admin else 'Sistem/Tidak Diketahui' }}</td></tr>
+                                    </table>
+                                </div>
+                                <div class="modal-footer bg-light">
+                                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Tutup</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Modal Edit -->
+                    <div class="modal fade" id="modalEdit{{ barang.id }}" tabindex="-1" aria-hidden="true">
+                        <div class="modal-dialog modal-lg">
+                            <div class="modal-content border-0 shadow">
+                                <form action="{{ url_for('barang.edit', id=barang.id) }}" method="POST">
+                                    <div class="modal-header bg-light">
+                                        <h5 class="modal-title fw-bold"><i class="bi bi-pencil-square me-2 text-primary"></i>Edit Data Barang</h5>
+                                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                    </div>
+                                    <div class="modal-body text-start">
+                                        <div class="row g-3">
+                                            <div class="col-md-6">
+                                                <label class="form-label fw-semibold text-muted">Kode Barang <span class="text-danger">*</span></label>
+                                                <input type="text" class="form-control" name="kode_barang" value="{{ barang.kode_barang }}" required maxlength="50">
+                                            </div>
+                                            <div class="col-md-6">
+                                                <label class="form-label fw-semibold text-muted">Nama Barang <span class="text-danger">*</span></label>
+                                                <input type="text" class="form-control" name="nama_barang" value="{{ barang.nama_barang }}" required maxlength="200">
+                                            </div>
+                                            <div class="col-md-6">
+                                                <label class="form-label fw-semibold text-muted">Kategori <span class="text-danger">*</span></label>
+                                                <select class="form-select" name="kategori_id" required>
+                                                    <option value="">Pilih Kategori...</option>
+                                                    {% for kat in kategoris %}
+                                                        <option value="{{ kat.id }}" {% if barang.kategori_id == kat.id %}selected{% endif %}>{{ kat.nama_kategori }}</option>
+                                                    {% endfor %}
+                                                </select>
+                                            </div>
+                                            <div class="col-md-6">
+                                                <label class="form-label fw-semibold text-muted">Lokasi Penyimpanan</label>
+                                                <input type="text" class="form-control" name="lokasi" value="{{ barang.lokasi or '' }}" maxlength="100">
+                                            </div>
+                                            <div class="col-md-4">
+                                                <label class="form-label fw-semibold text-muted">Jumlah <span class="text-danger">*</span></label>
+                                                <input type="number" class="form-control" name="jumlah" value="{{ barang.jumlah }}" required min="0">
+                                            </div>
+                                            <div class="col-md-4">
+                                                <label class="form-label fw-semibold text-muted">Kondisi <span class="text-danger">*</span></label>
+                                                <select class="form-select" name="kondisi" required>
+                                                    <option value="Baik" {% if barang.kondisi == 'Baik' %}selected{% endif %}>Baik</option>
+                                                    <option value="Rusak Ringan" {% if barang.kondisi == 'Rusak Ringan' %}selected{% endif %}>Rusak Ringan</option>
+                                                    <option value="Rusak Berat" {% if barang.kondisi == 'Rusak Berat' %}selected{% endif %}>Rusak Berat</option>
+                                                </select>
+                                            </div>
+                                            <div class="col-md-4">
+                                                <label class="form-label fw-semibold text-muted">Tanggal Masuk <span class="text-danger">*</span></label>
+                                                <input type="date" class="form-control" name="tanggal_masuk" value="{{ barang.tanggal_masuk.strftime('%Y-%m-%d') if barang.tanggal_masuk else '' }}" required>
+                                            </div>
+                                            <div class="col-12">
+                                                <label class="form-label fw-semibold text-muted">Keterangan / Deskripsi Tambahan</label>
+                                                <textarea class="form-control" name="deskripsi" rows="2">{{ barang.deskripsi or '' }}</textarea>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="modal-footer bg-light">
+                                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Batal</button>
+                                        <button type="submit" class="btn btn-primary fw-bold">Simpan Perubahan</button>
+                                    </div>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Modal Hapus -->
+                    <div class="modal fade" id="modalHapus{{ barang.id }}" tabindex="-1" aria-hidden="true">
+                        <div class="modal-dialog">
+                            <div class="modal-content border-0 shadow">
+                                <form action="{{ url_for('barang.delete', id=barang.id) }}" method="POST">
+                                    <div class="modal-header bg-light">
+                                        <h5 class="modal-title fw-bold text-danger"><i class="bi bi-exclamation-triangle-fill me-2"></i>Konfirmasi Hapus</h5>
+                                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                    </div>
+                                    <div class="modal-body text-start">
+                                        Apakah Anda yakin ingin menghapus barang <strong>{{ barang.nama_barang }}</strong> (Kode: {{ barang.kode_barang }}) secara permanen?
+                                    </div>
+                                    <div class="modal-footer bg-light">
+                                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Batal</button>
+                                        <button type="submit" class="btn btn-danger fw-bold">Ya, Hapus</button>
+                                    </div>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                    {% else %}
+                    <!-- Empty State -->
+                    <tr>
+                        <td colspan="8" class="text-center py-5 text-muted">
+                            <i class="bi bi-box-seam fs-1 d-block mb-2 opacity-50"></i>
+                            {% if search or selected_kategori or selected_kondisi %}
+                                Tidak ada barang yang cocok dengan kriteria filter.
+                            {% else %}
+                                Belum ada data barang inventaris.
+                            {% endif %}
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+
+<!-- Modal Tambah Barang -->
+<div class="modal fade" id="modalTambah" tabindex="-1" aria-labelledby="modalTambahLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content border-0 shadow">
+            <form action="{{ url_for('barang.add') }}" method="POST">
+                <div class="modal-header bg-light">
+                    <h5 class="modal-title fw-bold" id="modalTambahLabel"><i class="bi bi-plus-circle-fill me-2 text-primary"></i>Tambah Barang Baru</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <div class="row g-3">
+                        <div class="col-md-6">
+                            <label class="form-label fw-semibold text-muted">Kode Barang <span class="text-danger">*</span></label>
+                            <input type="text" class="form-control" name="kode_barang" required maxlength="50" placeholder="Contoh: INV-ELK-001">
+                        </div>
+                        <div class="col-md-6">
+                            <label class="form-label fw-semibold text-muted">Nama Barang <span class="text-danger">*</span></label>
+                            <input type="text" class="form-control" name="nama_barang" required maxlength="200" placeholder="Contoh: Proyektor Epson X500">
+                        </div>
+                        <div class="col-md-6">
+                            <label class="form-label fw-semibold text-muted">Kategori <span class="text-danger">*</span></label>
+                            <select class="form-select" name="kategori_id" required>
+                                <option value="">-- Pilih Kategori --</option>
+                                {% for kat in kategoris %}
+                                    <option value="{{ kat.id }}">{{ kat.nama_kategori }}</option>
+                                {% endfor %}
+                            </select>
+                        </div>
+                        <div class="col-md-6">
+                            <label class="form-label fw-semibold text-muted">Lokasi Penyimpanan</label>
+                            <input type="text" class="form-control" name="lokasi" maxlength="100" placeholder="Contoh: Ruang Lab Komputer">
+                        </div>
+                        <div class="col-md-4">
+                            <label class="form-label fw-semibold text-muted">Jumlah <span class="text-danger">*</span></label>
+                            <input type="number" class="form-control" name="jumlah" required min="0" value="1">
+                        </div>
+                        <div class="col-md-4">
+                            <label class="form-label fw-semibold text-muted">Kondisi <span class="text-danger">*</span></label>
+                            <select class="form-select" name="kondisi" required>
+                                <option value="Baik" selected>Baik</option>
+                                <option value="Rusak Ringan">Rusak Ringan</option>
+                                <option value="Rusak Berat">Rusak Berat</option>
+                            </select>
+                        </div>
+                        <div class="col-md-4">
+                            <label class="form-label fw-semibold text-muted">Tanggal Masuk <span class="text-danger">*</span></label>
+                            <!-- Menyiapkan nilai default hari ini menggunakan Jinja datetime -->
+                            <input type="date" class="form-control" name="tanggal_masuk" required>
+                        </div>
+                        <div class="col-12">
+                            <label class="form-label fw-semibold text-muted">Keterangan / Deskripsi Tambahan</label>
+                            <textarea class="form-control" name="deskripsi" rows="2" placeholder="Catatan khusus tentang barang ini..."></textarea>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer bg-light">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Batal</button>
+                    <button type="submit" class="btn btn-primary fw-bold">Simpan Barang</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<script>
+    // Set default date for "Tambah Barang" Tanggal Masuk to today's date
+    document.addEventListener("DOMContentLoaded", function() {
+        const dateInput = document.querySelector('#modalTambah input[type="date"]');
+        if(dateInput) {
+            const today = new Date().toISOString().split('T')[0];
+            dateInput.value = today;
+        }
+    });
+</script>
+{% endblock %}

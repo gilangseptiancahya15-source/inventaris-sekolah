@@ -1,5 +1,5 @@
 import uuid
-from datetime import datetime, timezone
+from datetime import datetime, timezone, date
 from sqlalchemy.dialects.postgresql import UUID
 from sqlalchemy import CheckConstraint
 from app import db
@@ -16,9 +16,11 @@ class BarangInventaris(db.Model):
     # Kolom Data
     kode_barang = db.Column(db.String(50), unique=True, nullable=False)
     nama_barang = db.Column(db.String(200), nullable=False)
-    deskripsi = db.Column(db.Text, nullable=True)
+    deskripsi = db.Column(db.Text, nullable=True) # Merupakan Keterangan
     jumlah = db.Column(db.Integer, nullable=False)
     kondisi = db.Column(db.String(50), nullable=False)
+    lokasi = db.Column(db.String(100), nullable=True)
+    tanggal_masuk = db.Column(db.Date, nullable=False, default=lambda: datetime.now(timezone.utc).date())
     
     # Timestamps
     created_at = db.Column(db.DateTime(timezone=True), default=lambda: datetime.now(timezone.utc))

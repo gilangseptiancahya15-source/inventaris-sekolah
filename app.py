@@ -24,9 +24,11 @@ def create_app():
     # Registrasi Blueprints
     from routes.auth import auth_bp
     from routes.kategori import kategori_bp
+    from routes.barang import barang_bp
     
     app.register_blueprint(auth_bp)
     app.register_blueprint(kategori_bp)
+    app.register_blueprint(barang_bp)
 
     @app.route('/')
     @login_required
