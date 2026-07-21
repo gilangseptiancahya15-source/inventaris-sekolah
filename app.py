@@ -61,11 +61,11 @@ def create_app():
         
         # Statistik Card Data
         total_kategori = Kategori.query.count()
-        # Menggunakan sum() untuk menjumlahkan kolom 'jumlah' barang fisik
-        total_barang = db.session.query(db.func.sum(BarangInventaris.jumlah)).scalar() or 0
-        baik = db.session.query(db.func.sum(BarangInventaris.jumlah)).filter_by(kondisi='Baik').scalar() or 0
-        rusak_ringan = db.session.query(db.func.sum(BarangInventaris.jumlah)).filter_by(kondisi='Rusak Ringan').scalar() or 0
-        rusak_berat = db.session.query(db.func.sum(BarangInventaris.jumlah)).filter_by(kondisi='Rusak Berat').scalar() or 0
+        # Konversi Decimal → int agar Chart.js berfungsi dengan benar
+        total_barang = int(db.session.query(db.func.sum(BarangInventaris.jumlah)).scalar() or 0)
+        baik = int(db.session.query(db.func.sum(BarangInventaris.jumlah)).filter_by(kondisi='Baik').scalar() or 0)
+        rusak_ringan = int(db.session.query(db.func.sum(BarangInventaris.jumlah)).filter_by(kondisi='Rusak Ringan').scalar() or 0)
+        rusak_berat = int(db.session.query(db.func.sum(BarangInventaris.jumlah)).filter_by(kondisi='Rusak Berat').scalar() or 0)
         
         # Aktivitas Terbaru (5 Barang terakhir diinput)
         recent_items = BarangInventaris.query.order_by(BarangInventaris.created_at.desc()).limit(5).all()

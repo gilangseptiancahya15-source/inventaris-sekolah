@@ -143,20 +143,21 @@
 {% endblock %}
 
 {% block scripts %}
-<!-- Memuat Chart.js dari CDN -->
-<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<!-- Chart.js untuk Dashboard -->
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
 <script>
-document.addEventListener("DOMContentLoaded", function() {
-    const ctx = document.getElementById('kondisiChart').getContext('2d');
-    
-    // Menyuntikkan data Python/Jinja ke variabel JavaScript
-    const dataBaik = {{ baik }};
-    const dataRusakRingan = {{ rusak_ringan }};
-    const dataRusakBerat = {{ rusak_berat }};
-    
-    // Menghindari chart kosong jika belum ada data sama sekali
-    const totalData = dataBaik + dataRusakRingan + dataRusakBerat;
-    
+(function() {
+    // Data dari server (sudah int, aman untuk JSON)
+    var dataBaik        = {{ baik }};
+    var dataRusakRingan = {{ rusak_ringan }};
+    var dataRusakBerat  = {{ rusak_berat }};
+    var totalData       = dataBaik + dataRusakRingan + dataRusakBerat;
+
+    var canvas = document.getElementById('kondisiChart');
+    if (!canvas) return;
+
+    var ctx = canvas.getContext('2d');
+
     if (totalData > 0) {
         new Chart(ctx, {
             type: 'doughnut',
@@ -164,14 +165,10 @@ document.addEventListener("DOMContentLoaded", function() {
                 labels: ['Kondisi Baik', 'Rusak Ringan', 'Rusak Berat'],
                 datasets: [{
                     data: [dataBaik, dataRusakRingan, dataRusakBerat],
-                    backgroundColor: [
-                        '#198754', // Success
-                        '#ffc107', // Warning
-                        '#dc3545'  // Danger
-                    ],
-                    borderWidth: 2,
+                    backgroundColor: ['#198754', '#ffc107', '#dc3545'],
+                    borderWidth: 3,
                     borderColor: '#ffffff',
-                    hoverOffset: 6
+                    hoverOffset: 8
                 }]
             },
             options: {
@@ -183,41 +180,27 @@ document.addEventListener("DOMContentLoaded", function() {
                         labels: {
                             padding: 20,
                             usePointStyle: true,
-                            font: {
-                                size: 12,
-                                family: "'Segoe UI', Roboto, Helvetica, Arial, sans-serif"
-                            }
+                            font: { size: 12, family: "'Inter', sans-serif" }
                         }
                     },
                     tooltip: {
                         callbacks: {
-                            label: function(context) {
-                                let label = context.label || '';
-                                if (label) {
-                                    label += ': ';
-                                }
-                                if (context.parsed !== null) {
-                                    label += context.parsed + ' Unit';
-                                }
-                                return label;
+                            label: function(ctx) {
+                                return ' ' + ctx.label + ': ' + ctx.parsed + ' Unit';
                             }
                         }
                     }
                 },
-                cutout: '75%' // Memperbesar lubang doughnut agar terlihat modern
+                cutout: '72%'
             }
         });
     } else {
-        // Fallback chart abu-abu jika data kosong
+        // Fallback chart abu-abu saat belum ada data
         new Chart(ctx, {
             type: 'doughnut',
             data: {
                 labels: ['Belum Ada Data'],
-                datasets: [{
-                    data: [1],
-                    backgroundColor: ['#e9ecef'],
-                    borderWidth: 0
-                }]
+                datasets: [{ data: [1], backgroundColor: ['#e9ecef'], borderWidth: 0 }]
             },
             options: {
                 responsive: true,
@@ -226,10 +209,10 @@ document.addEventListener("DOMContentLoaded", function() {
                     legend: { display: false },
                     tooltip: { enabled: false }
                 },
-                cutout: '75%'
+                cutout: '72%'
             }
         });
     }
-});
+})();
 </script>
 {% endblock %}

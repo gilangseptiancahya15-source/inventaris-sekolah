@@ -255,12 +255,11 @@
 {% endblock %}
 
 {% block scripts %}
-<!-- Render Variabel Python ke JS untuk Chart.js -->
+<!-- Render Variabel Python ke JS untuk Chart.js (gunakan window. agar bisa diakses main.js) -->
 <script>
-    const kategoriLabel = {{ label_kategori | tojson | safe }};
-    const kategoriData = {{ data_kategori | tojson | safe }};
-    
-    const kondisiLabel = {{ label_kondisi | tojson | safe }};
-    const kondisiData = {{ data_kondisi | tojson | safe }};
+    window.kategoriLabel = {{ label_kategori | tojson | safe }};
+    window.kategoriData  = {{ data_kategori  | tojson | safe }};
+    window.kondisiLabel  = {{ label_kondisi  | tojson | safe }};
+    window.kondisiData   = {{ data_kondisi   | tojson | safe }};
 </script>
 {% endblock %}

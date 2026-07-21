@@ -24,18 +24,19 @@ def home():
     ).join(BarangInventaris, Kategori.id == BarangInventaris.kategori_id).group_by(Kategori.nama_kategori).all()
     
     label_kategori = [k[0] for k in kategori_data]
-    data_kategori = [k[1] for k in kategori_data]
+    # Konversi Decimal → int agar tojson berjalan dengan benar untuk Chart.js
+    data_kategori = [int(k[1] or 0) for k in kategori_data]
 
-    # Data Grafik Kondisi
+    # Data Grafik Kondisi — Decimal → int
     label_kondisi = ['Baik', 'Rusak Ringan', 'Rusak Berat']
-    data_kondisi = [baik, rusak_ringan, rusak_berat]
+    data_kondisi = [int(baik), int(rusak_ringan), int(rusak_berat)]
 
     return render_template('publik/home.html',
                            total_kategori=total_kategori,
-                           total_barang=total_barang,
-                           baik=baik,
-                           rusak_ringan=rusak_ringan,
-                           rusak_berat=rusak_berat,
+                           total_barang=int(total_barang),
+                           baik=int(baik),
+                           rusak_ringan=int(rusak_ringan),
+                           rusak_berat=int(rusak_berat),
                            recent_items=recent_items,
                            label_kategori=label_kategori,
                            data_kategori=data_kategori,
@@ -84,10 +85,10 @@ def detail(id):
 
 @public_bp.route('/statistik')
 def statistik():
-    # Sama seperti home, tetapi bisa kita kembangkan lebih detail
-    baik = db.session.query(func.sum(BarangInventaris.jumlah)).filter_by(kondisi='Baik').scalar() or 0
-    rusak_ringan = db.session.query(func.sum(BarangInventaris.jumlah)).filter_by(kondisi='Rusak Ringan').scalar() or 0
-    rusak_berat = db.session.query(func.sum(BarangInventaris.jumlah)).filter_by(kondisi='Rusak Berat').scalar() or 0
+    # Konversi Decimal → int agar Chart.js dapat membaca data dengan benar
+    baik = int(db.session.query(func.sum(BarangInventaris.jumlah)).filter_by(kondisi='Baik').scalar() or 0)
+    rusak_ringan = int(db.session.query(func.sum(BarangInventaris.jumlah)).filter_by(kondisi='Rusak Ringan').scalar() or 0)
+    rusak_berat = int(db.session.query(func.sum(BarangInventaris.jumlah)).filter_by(kondisi='Rusak Berat').scalar() or 0)
 
     kategori_data = db.session.query(
         Kategori.nama_kategori,
@@ -95,8 +96,8 @@ def statistik():
     ).outerjoin(BarangInventaris, Kategori.id == BarangInventaris.kategori_id).group_by(Kategori.nama_kategori).all()
     
     label_kategori = [k[0] for k in kategori_data]
-    # Ganti None dengan 0 jika kategori belum ada barangnya
-    data_kategori = [k[1] or 0 for k in kategori_data]
+    # Decimal → int, ganti None dengan 0
+    data_kategori = [int(k[1] or 0) for k in kategori_data]
 
     label_kondisi = ['Baik', 'Rusak Ringan', 'Rusak Berat']
     data_kondisi = [baik, rusak_ringan, rusak_berat]

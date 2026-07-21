@@ -1,18 +1,50 @@
-/* Variabel Tema Modern: Putih, Biru, Abu-abu */
+/* =========================================
+   Variabel Tema Modern: Putih, Biru, Abu-abu
+========================================= */
 :root {
     --primary-blue: #0d6efd;
     --primary-blue-hover: #0a58ca;
+    --primary-blue-light: rgba(13, 110, 253, 0.08);
     --bg-gray: #f4f7f6;
     --white: #ffffff;
     --text-dark: #2b3445;
     --text-muted: #7d879c;
+    --border-color: rgba(0,0,0,0.06);
     --sidebar-width: 260px;
+    --radius-sm: 8px;
+    --radius-md: 12px;
+    --radius-lg: 16px;
+    --shadow-xs: 0 2px 8px rgba(0,0,0,0.04);
+    --shadow-sm: 0 4px 15px rgba(0,0,0,0.05);
+    --shadow-md: 0 8px 25px rgba(0,0,0,0.08);
+    --shadow-lg: 0 16px 40px rgba(0,0,0,0.12);
+    --transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+/* =========================================
+   Base & Typography
+========================================= */
+*, *::before, *::after {
+    box-sizing: border-box;
 }
 
 body {
     background-color: var(--bg-gray);
     color: var(--text-dark);
     font-family: 'Inter', system-ui, -apple-system, sans-serif;
+    font-size: 0.9rem;
+    line-height: 1.6;
+    -webkit-font-smoothing: antialiased;
+}
+
+h1, h2, h3, h4, h5, h6 {
+    font-weight: 700;
+    color: var(--text-dark);
+    letter-spacing: -0.3px;
+}
+
+a {
+    transition: var(--transition);
 }
 
 /* =========================================
@@ -21,14 +53,20 @@ body {
 .card-modern {
     background: var(--white);
     border: none !important;
-    border-radius: 12px !important;
-    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.04) !important;
-    transition: transform 0.3s ease, box-shadow 0.3s ease;
+    border-radius: var(--radius-md) !important;
+    box-shadow: var(--shadow-sm) !important;
+    transition: var(--transition);
 }
 
 .card-modern.hoverable:hover {
-    transform: translateY(-5px);
-    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.08) !important;
+    transform: translateY(-4px);
+    box-shadow: var(--shadow-md) !important;
+}
+
+/* Chart wrapper agar canvas tidak overflow */
+.card-modern canvas {
+    display: block;
+    max-width: 100%;
 }
 
 /* =========================================
@@ -37,36 +75,53 @@ body {
 .sidebar {
     background: var(--white);
     box-shadow: 2px 0 20px rgba(0,0,0,0.03);
-    border-right: none;
+    border-right: 1px solid var(--border-color);
     z-index: 1040;
-    transition: all 0.3s ease;
+    transition: var(--transition);
 }
+
 .sidebar .nav-link {
     color: var(--text-muted);
-    border-radius: 10px;
-    margin: 4px 16px;
-    padding: 10px 16px;
+    border-radius: var(--radius-sm);
+    margin: 2px 12px;
+    padding: 10px 14px;
     font-weight: 600;
-    font-size: 0.9rem;
-    transition: all 0.2s ease;
+    font-size: 0.875rem;
+    transition: var(--transition);
+    display: flex;
+    align-items: center;
+    gap: 2px;
 }
+
 .sidebar .nav-link i {
-    transition: transform 0.2s;
+    transition: transform 0.2s ease;
+    width: 20px;
+    text-align: center;
 }
+
 .sidebar .nav-link:hover {
-    background-color: rgba(13, 110, 253, 0.05);
+    background-color: var(--primary-blue-light);
     color: var(--primary-blue);
+    padding-left: 18px;
 }
+
 .sidebar .nav-link:hover i {
-    transform: scale(1.1);
+    transform: scale(1.15);
 }
+
 .sidebar .nav-link.active {
-    background-color: var(--primary-blue);
+    background: linear-gradient(135deg, var(--primary-blue) 0%, #0a58ca 100%);
     color: var(--white) !important;
-    box-shadow: 0 4px 12px rgba(13, 110, 253, 0.25);
+    box-shadow: 0 4px 14px rgba(13, 110, 253, 0.3);
 }
+
 .sidebar .nav-link.active i {
     color: var(--white) !important;
+}
+
+.sidebar-heading {
+    font-size: 0.7rem !important;
+    letter-spacing: 1.2px;
 }
 
 /* =========================================
@@ -74,44 +129,160 @@ body {
 ========================================= */
 .navbar-modern {
     background: var(--white) !important;
-    box-shadow: 0 2px 15px rgba(0,0,0,0.04);
+    box-shadow: 0 1px 0 var(--border-color), 0 4px 15px rgba(0,0,0,0.03);
+    height: 60px;
 }
+
 .navbar-brand-modern {
     color: var(--primary-blue) !important;
     font-weight: 800;
-    font-size: 1.25rem;
+    font-size: 1.15rem;
     padding-left: 20px;
     letter-spacing: 0.5px;
 }
 
-/* =========================================
-   Table Hover Effect
-========================================= */
-.table-hover tbody tr {
-    transition: background-color 0.2s ease, transform 0.2s ease;
+.btn-logout {
+    transition: var(--transition);
+    border-radius: var(--radius-sm);
+    padding: 6px 14px !important;
 }
+
+.btn-logout:hover {
+    background-color: rgba(220, 53, 69, 0.08);
+    border-radius: var(--radius-sm);
+}
+
+/* =========================================
+   Table Styling
+========================================= */
+.table {
+    font-size: 0.875rem;
+}
+
+.table thead th {
+    font-size: 0.75rem;
+    font-weight: 700;
+    letter-spacing: 0.6px;
+    text-transform: uppercase;
+    color: var(--text-muted);
+    border-bottom: 1px solid var(--border-color) !important;
+    white-space: nowrap;
+    padding: 12px 16px;
+}
+
+.table-hover tbody tr {
+    transition: background-color 0.15s ease;
+}
+
 .table-hover tbody tr:hover {
-    background-color: rgba(13, 110, 253, 0.04);
+    background-color: var(--primary-blue-light);
+}
+
+.table td {
+    vertical-align: middle;
+    padding: 12px 16px;
+    border-color: var(--border-color) !important;
 }
 
 /* =========================================
    Modern Buttons
 ========================================= */
 .btn-modern {
-    border-radius: 8px;
+    border-radius: var(--radius-sm);
     font-weight: 600;
+    font-size: 0.875rem;
     padding: 8px 20px;
-    transition: all 0.2s;
+    transition: var(--transition);
+    letter-spacing: 0.2px;
+    position: relative;
+    overflow: hidden;
 }
+
 .btn-primary-modern {
-    background-color: var(--primary-blue);
+    background: linear-gradient(135deg, var(--primary-blue) 0%, #0a58ca 100%);
     border: none;
-    box-shadow: 0 4px 10px rgba(13, 110, 253, 0.2);
+    box-shadow: 0 4px 12px rgba(13, 110, 253, 0.25);
 }
+
 .btn-primary-modern:hover {
-    background-color: var(--primary-blue-hover);
+    background: linear-gradient(135deg, #0a58ca 0%, #084298 100%);
     transform: translateY(-2px);
-    box-shadow: 0 6px 15px rgba(13, 110, 253, 0.3);
+    box-shadow: 0 6px 18px rgba(13, 110, 253, 0.35);
+}
+
+.btn-primary-modern:active {
+    transform: translateY(0);
+}
+
+/* =========================================
+   Form Controls
+========================================= */
+.form-control, .form-select {
+    border-radius: var(--radius-sm);
+    border-color: #dee2e6;
+    font-size: 0.875rem;
+    padding: 8px 14px;
+    transition: var(--transition);
+    background-color: #fafbfc;
+}
+
+.form-control:focus, .form-select:focus {
+    border-color: var(--primary-blue);
+    box-shadow: 0 0 0 3px rgba(13, 110, 253, 0.12);
+    background-color: var(--white);
+}
+
+.form-label {
+    font-weight: 600;
+    font-size: 0.8rem;
+    color: var(--text-muted);
+    margin-bottom: 6px;
+    letter-spacing: 0.4px;
+    text-transform: uppercase;
+}
+
+/* =========================================
+   Badge Modern
+========================================= */
+.badge {
+    font-weight: 600;
+    letter-spacing: 0.3px;
+    font-size: 0.75rem;
+    padding: 5px 10px;
+}
+
+/* =========================================
+   Alert Modern
+========================================= */
+.alert {
+    border-radius: var(--radius-md);
+    border: none;
+    font-size: 0.875rem;
+}
+
+/* =========================================
+   Pagination Modern
+========================================= */
+.page-link {
+    border-radius: var(--radius-sm) !important;
+    border-color: var(--border-color);
+    color: var(--text-dark);
+    font-weight: 600;
+    font-size: 0.8rem;
+    padding: 6px 12px;
+    transition: var(--transition);
+}
+
+.page-link:hover {
+    background-color: var(--primary-blue-light);
+    color: var(--primary-blue);
+    border-color: transparent;
+}
+
+.page-item.active .page-link {
+    background-color: var(--primary-blue);
+    border-color: var(--primary-blue);
+    box-shadow: 0 2px 8px rgba(13, 110, 253, 0.3);
 }
 
 /* =========================================
@@ -121,14 +292,15 @@ body {
     background: linear-gradient(90deg, #ececec 25%, #f8f9fa 50%, #ececec 75%);
     background-size: 200% 100%;
     animation: skeleton-loading 1.5s infinite;
-    border-radius: 12px;
+    border-radius: var(--radius-md);
 }
+
 .skeleton-text { height: 20px; width: 100%; margin-bottom: 10px; }
 .skeleton-card { height: 120px; width: 100%; }
 .skeleton-table { height: 350px; width: 100%; }
 
 @keyframes skeleton-loading {
-    0% { background-position: 200% 0; }
+    0%   { background-position: 200% 0; }
     100% { background-position: -200% 0; }
 }
 
@@ -145,8 +317,115 @@ body {
     align-items: center;
     transition: opacity 0.4s ease;
 }
+
 .spinner-modern {
     width: 3rem;
     height: 3rem;
     color: var(--primary-blue);
+}
+
+/* =========================================
+   Scrollbar Styling (Webkit)
+========================================= */
+::-webkit-scrollbar {
+    width: 6px;
+    height: 6px;
+}
+::-webkit-scrollbar-track {
+    background: transparent;
+}
+::-webkit-scrollbar-thumb {
+    background: #d0d7de;
+    border-radius: 99px;
+}
+::-webkit-scrollbar-thumb:hover {
+    background: #a8b3bf;
+}
+
+/* =========================================
+   Input Group Modern
+========================================= */
+.input-group .input-group-text {
+    border-radius: var(--radius-sm) 0 0 var(--radius-sm);
+    background-color: #fafbfc;
+    border-color: #dee2e6;
+    color: var(--text-muted);
+}
+
+.input-group .form-control {
+    border-radius: 0 var(--radius-sm) var(--radius-sm) 0;
+}
+
+/* =========================================
+   Progress Bar Modern
+========================================= */
+.progress {
+    border-radius: 99px;
+    background-color: #edf2f7;
+}
+
+.progress-bar {
+    border-radius: 99px;
+    transition: width 0.8s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+/* =========================================
+   Breadcrumb Modern
+========================================= */
+.breadcrumb {
+    font-size: 0.82rem;
+    margin-bottom: 0;
+}
+
+.breadcrumb-item + .breadcrumb-item::before {
+    color: #c5cdd8;
+}
+
+/* =========================================
+   Chart Container — Pastikan Canvas Render
+========================================= */
+.chart-container {
+    position: relative;
+    width: 100%;
+}
+
+/* =========================================
+   Animations
+========================================= */
+@keyframes fadeInUp {
+    from { opacity: 0; transform: translateY(16px); }
+    to   { opacity: 1; transform: translateY(0); }
+}
+
+.content-container {
+    animation: fadeInUp 0.4s ease both;
+}
+
+/* =========================================
+   Publik Layout — Navbar
+========================================= */
+.navbar {
+    transition: box-shadow 0.2s ease;
+}
+
+.navbar-brand {
+    font-size: 1.1rem;
+}
+
+/* =========================================
+   Responsive Tweaks
+========================================= */
+@media (max-width: 767.98px) {
+    .sidebar .nav-link {
+        margin: 2px 8px;
+        padding: 9px 12px;
+    }
+    
+    .card-modern.hoverable:hover {
+        transform: none;
+    }
+    
+    .btn-primary-modern:hover {
+        transform: none;
+    }
 }

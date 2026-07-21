@@ -1,0 +1,25 @@
+{% extends "publik/layout.html" %}
+
+{% block title %}500 — Terjadi Kesalahan Server{% endblock %}
+
+{% block content %}
+<div class="container py-5 text-center" style="min-height: 70vh; display:flex; flex-direction:column; align-items:center; justify-content:center;">
+    <div class="mb-4">
+        <i class="bi bi-exclamation-triangle-fill text-danger" style="font-size: 5rem;"></i>
+    </div>
+    <h1 class="display-1 fw-bolder text-dark" style="letter-spacing: -3px;">500</h1>
+    <h2 class="fw-bold text-dark mb-3">Terjadi Kesalahan Server</h2>
+    <p class="text-muted mb-5 lead px-md-5">
+        Server mengalami kesalahan internal. Tim kami telah diberitahu.<br>
+        Silakan coba lagi dalam beberapa saat.
+    </p>
+    <div class="d-flex gap-3 justify-content-center flex-wrap">
+        <a href="/" class="btn btn-primary-modern btn-lg fw-bold text-white px-5 rounded-pill hoverable">
+            <i class="bi bi-house-door me-2"></i>Kembali ke Home
+        </a>
+        <a href="javascript:history.back()" class="btn btn-outline-secondary btn-lg fw-bold px-5 rounded-pill hoverable">
+            <i class="bi bi-arrow-left me-2"></i>Halaman Sebelumnya
+        </a>
+    </div>
+</div>
+{% endblock %}
