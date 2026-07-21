@@ -1,0 +1,161 @@
+{% extends 'base.html' %}
+
+{% block title %}Manajemen Kategori{% endblock %}
+{% block nav_kategori %}active{% endblock %}
+{% block page_title %}Kategori Barang{% endblock %}
+
+{% block breadcrumb %}
+    <li class="breadcrumb-item active" aria-current="page">Kategori</li>
+{% endblock %}
+
+{% block page_actions %}
+<!-- Tombol Trigger Modal Tambah -->
+<button type="button" class="btn btn-primary fw-bold" data-bs-toggle="modal" data-bs-target="#modalTambah">
+    <i class="bi bi-plus-circle me-1"></i> Tambah Kategori
+</button>
+{% endblock %}
+
+{% block content %}
+<div class="card shadow-sm border-0 rounded-3">
+    <div class="card-body">
+        
+        <!-- Form Pencarian (Search) -->
+        <form action="{{ url_for('kategori.index') }}" method="GET" class="mb-4">
+            <div class="input-group" style="max-width: 450px;">
+                <!-- Client Validation: Input wajib diisi ketika tombol cari ditekan, atau bisa dihapus required-nya jika ingin bisa submit kosong untuk mereset -->
+                <input type="text" class="form-control" name="search" placeholder="Cari nama kategori..." value="{{ search }}">
+                <button class="btn btn-outline-secondary px-4" type="submit"><i class="bi bi-search"></i> Cari</button>
+                {% if search %}
+                    <a href="{{ url_for('kategori.index') }}" class="btn btn-outline-danger" title="Reset Pencarian"><i class="bi bi-x-circle-fill"></i></a>
+                {% endif %}
+            </div>
+        </form>
+
+        <!-- Tabel List Kategori -->
+        <div class="table-responsive">
+            <table class="table table-hover align-middle border">
+                <thead class="table-light">
+                    <tr>
+                        <th width="5%" class="text-center">No</th>
+                        <th width="25%">Nama Kategori</th>
+                        <th width="40%">Deskripsi</th>
+                        <th width="15%">Terdaftar Pada</th>
+                        <th width="15%" class="text-center">Aksi</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for kategori in kategoris %}
+                    <tr>
+                        <td class="text-center text-muted">{{ loop.index }}</td>
+                        <td class="fw-bold text-dark">{{ kategori.nama_kategori }}</td>
+                        <td class="text-muted">{{ kategori.deskripsi or '-' }}</td>
+                        <td class="text-muted small">{{ kategori.created_at.strftime('%d %b %Y') }}</td>
+                        <td class="text-center">
+                            <!-- Tombol Edit & Hapus -->
+                            <button class="btn btn-sm btn-outline-primary me-1" data-bs-toggle="modal" data-bs-target="#modalEdit{{ kategori.id }}" title="Edit Kategori">
+                                <i class="bi bi-pencil-square"></i>
+                            </button>
+                            <button class="btn btn-sm btn-outline-danger" data-bs-toggle="modal" data-bs-target="#modalHapus{{ kategori.id }}" title="Hapus Kategori">
+                                <i class="bi bi-trash"></i>
+                            </button>
+                        </td>
+                    </tr>
+
+                    <!-- Modal Edit Kategori (Per Baris) -->
+                    <div class="modal fade" id="modalEdit{{ kategori.id }}" tabindex="-1" aria-labelledby="modalEditLabel{{ kategori.id }}" aria-hidden="true">
+                        <div class="modal-dialog">
+                            <div class="modal-content border-0 shadow">
+                                <form action="{{ url_for('kategori.edit', id=kategori.id) }}" method="POST">
+                                    <div class="modal-header bg-light">
+                                        <h5 class="modal-title fw-bold" id="modalEditLabel{{ kategori.id }}"><i class="bi bi-pencil-square me-2 text-primary"></i>Edit Kategori</h5>
+                                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                    </div>
+                                    <div class="modal-body text-start">
+                                        <div class="mb-3">
+                                            <label class="form-label fw-semibold text-muted">Nama Kategori <span class="text-danger">*</span></label>
+                                            <!-- Client Validation: atribut required dan maxlength -->
+                                            <input type="text" class="form-control" name="nama_kategori" value="{{ kategori.nama_kategori }}" required maxlength="100">
+                                        </div>
+                                        <div class="mb-3">
+                                            <label class="form-label fw-semibold text-muted">Deskripsi</label>
+                                            <textarea class="form-control" name="deskripsi" rows="3">{{ kategori.deskripsi or '' }}</textarea>
+                                        </div>
+                                    </div>
+                                    <div class="modal-footer bg-light">
+                                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Batal</button>
+                                        <button type="submit" class="btn btn-primary fw-bold">Simpan Perubahan</button>
+                                    </div>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Modal Konfirmasi Hapus -->
+                    <div class="modal fade" id="modalHapus{{ kategori.id }}" tabindex="-1" aria-hidden="true">
+                        <div class="modal-dialog">
+                            <div class="modal-content border-0 shadow">
+                                <form action="{{ url_for('kategori.delete', id=kategori.id) }}" method="POST">
+                                    <div class="modal-header bg-light">
+                                        <h5 class="modal-title fw-bold text-danger"><i class="bi bi-exclamation-triangle-fill me-2"></i>Konfirmasi Hapus</h5>
+                                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                    </div>
+                                    <div class="modal-body text-start">
+                                        <p class="mb-1">Apakah Anda yakin ingin menghapus kategori <strong>{{ kategori.nama_kategori }}</strong>?</p>
+                                        <p class="text-danger small mb-0"><i class="bi bi-info-circle me-1"></i>Tindakan ini tidak dapat dibatalkan. Pastikan tidak ada barang yang terkait dengan kategori ini.</p>
+                                    </div>
+                                    <div class="modal-footer bg-light">
+                                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Batal</button>
+                                        <button type="submit" class="btn btn-danger fw-bold">Ya, Hapus Kategori</button>
+                                    </div>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                    {% else %}
+                    <!-- Keadaan Kosong (Empty State) -->
+                    <tr>
+                        <td colspan="5" class="text-center py-5 text-muted">
+                            <i class="bi bi-tags fs-1 d-block mb-2 opacity-50"></i>
+                            {% if search %}
+                                Tidak ada kategori yang cocok dengan pencarian "<strong>{{ search }}</strong>".
+                            {% else %}
+                                Belum ada data kategori. Silakan tambahkan kategori baru.
+                            {% endif %}
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+
+<!-- Modal Tambah Kategori -->
+<div class="modal fade" id="modalTambah" tabindex="-1" aria-labelledby="modalTambahLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content border-0 shadow">
+            <form action="{{ url_for('kategori.add') }}" method="POST">
+                <div class="modal-header bg-light">
+                    <h5 class="modal-title fw-bold" id="modalTambahLabel"><i class="bi bi-plus-circle-fill me-2 text-primary"></i>Tambah Kategori Baru</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <div class="mb-3">
+                        <label class="form-label fw-semibold text-muted">Nama Kategori <span class="text-danger">*</span></label>
+                        <!-- Client Validation: required attr -->
+                        <input type="text" class="form-control" name="nama_kategori" required maxlength="100" placeholder="Masukkan nama kategori (contoh: Elektronik)">
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label fw-semibold text-muted">Deskripsi (Opsional)</label>
+                        <textarea class="form-control" name="deskripsi" rows="3" placeholder="Berikan deskripsi singkat jika perlu..."></textarea>
+                    </div>
+                </div>
+                <div class="modal-footer bg-light">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Batal</button>
+                    <button type="submit" class="btn btn-primary fw-bold">Simpan Kategori</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+{% endblock %}
