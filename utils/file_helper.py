@@ -3,6 +3,13 @@ utils/file_helper.py
 
 Helper untuk pengelolaan file upload gambar barang.
 Dirancang modular agar mudah diganti dari penyimpanan lokal ke cloud (Supabase Storage, dll).
+
+CATATAN VERCEL:
+  Vercel memiliki filesystem read-only di /var/task.
+  Fungsi save_file() akan mencoba menyimpan ke /tmp (satu-satunya folder writable di Lambda).
+  NAMUN file di /tmp bersifat ephemeral (hilang saat cold start).
+  Untuk produksi permanen, ganti implementasi save_file() dan delete_file()
+  agar memanggil Supabase Storage API.
 """
 
 import os
@@ -16,18 +23,32 @@ ALLOWED_EXTENSIONS = {'jpg', 'jpeg', 'png', 'webp'}
 MAX_FILE_SIZE_MB = 5
 MAX_FILE_SIZE_BYTES = MAX_FILE_SIZE_MB * 1024 * 1024  # 5MB in bytes
 
-# Subfolder relatif dari static/
+# Subfolder relatif dari static/ (untuk lokal)
 UPLOAD_SUBFOLDER = 'uploads/barang'
+
+# =============================================
+# Deteksi Environment (Vercel vs Lokal)
+# =============================================
+IS_VERCEL = os.getenv('VERCEL') == '1' or os.getenv('AWS_LAMBDA_FUNCTION_NAME') is not None
 
 
 def get_upload_folder():
     """
     Mengembalikan path absolut folder penyimpanan file upload.
-    Folder dibuat otomatis jika belum ada.
+    - Lokal  : static/uploads/barang/ (permanen)
+    - Vercel : /tmp/uploads/barang/   (ephemeral, hanya untuk cold start)
     """
-    from flask import current_app
-    folder = os.path.join(current_app.static_folder, UPLOAD_SUBFOLDER)
-    os.makedirs(folder, exist_ok=True)
+    if IS_VERCEL:
+        # Di Vercel, /tmp adalah satu-satunya folder yang bisa ditulis
+        folder = os.path.join('/tmp', UPLOAD_SUBFOLDER)
+    else:
+        from flask import current_app
+        folder = os.path.join(current_app.static_folder, UPLOAD_SUBFOLDER)
+
+    try:
+        os.makedirs(folder, exist_ok=True)
+    except OSError:
+        pass  # Gagal buat folder, biarkan save_file() menangani errornya
     return folder
 
 
@@ -49,11 +70,14 @@ def is_allowed_size(file_storage) -> bool:
 
 def save_file(file_storage) -> str | None:
     """
-    Menyimpan file ke folder lokal dan mengembalikan nama file unik.
-    Mengembalikan None jika file tidak valid.
+    Menyimpan file ke folder lokal/tmp dan mengembalikan nama file unik.
+    Mengembalikan None jika file tidak valid atau gagal disimpan.
 
-    NOTE: Untuk migrasi ke Supabase Storage, ganti fungsi ini saja dengan
-    panggilan ke Supabase Storage API (upload_file), lalu kembalikan URL publik.
+    NOTE (Migrasi ke Supabase Storage):
+        Ganti isi fungsi ini dengan panggilan ke Supabase Storage API:
+            import supabase
+            response = supabase.storage.from_('barang').upload(unique_filename, file_bytes)
+            return unique_filename  # atau URL publik dari response
     """
     if not file_storage or file_storage.filename == '':
         return None
@@ -68,17 +92,23 @@ def save_file(file_storage) -> str | None:
     ext = file_storage.filename.rsplit('.', 1)[1].lower()
     unique_filename = f"{uuid.uuid4().hex}.{ext}"
 
-    save_path = os.path.join(get_upload_folder(), unique_filename)
-    file_storage.save(save_path)
-    return unique_filename
+    try:
+        save_path = os.path.join(get_upload_folder(), unique_filename)
+        file_storage.save(save_path)
+        return unique_filename
+    except Exception:
+        # Gagal simpan file — kembalikan None, jangan crash aplikasi
+        return None
 
 
 def delete_file(filename: str) -> bool:
     """
-    Menghapus file dari folder lokal.
+    Menghapus file dari folder lokal/tmp.
     Mengembalikan True jika berhasil, False jika file tidak ditemukan.
 
-    NOTE: Untuk Supabase Storage, ganti dengan panggilan delete ke bucket.
+    NOTE (Migrasi ke Supabase Storage):
+        Ganti dengan panggilan delete ke bucket:
+            supabase.storage.from_('barang').remove([filename])
     """
     if not filename:
         return False
@@ -94,7 +124,7 @@ def delete_file(filename: str) -> bool:
 
 def get_foto_url(filename: str) -> str | None:
     """
-    Mengembalikan URL untuk ditampilkan di template.
+    Mengembalikan path relatif URL untuk ditampilkan di template.
     Untuk lokal: url_for('static', filename='uploads/barang/<filename>')
     Untuk Supabase Storage: kembalikan URL publik dari bucket.
     """

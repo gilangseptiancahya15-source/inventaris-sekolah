@@ -2,10 +2,18 @@ from flask import Flask, render_template
 from utils.decorators import login_required
 from config import Config
 from extensions import db, migrate
+import os
 
 def create_app():
     app = Flask(__name__)
     app.config.from_object(Config)
+
+    # Validasi DATABASE_URL setelah app dibuat (tidak saat import/build)
+    if not app.config.get('SQLALCHEMY_DATABASE_URI'):
+        raise RuntimeError(
+            "DATABASE_URL belum diatur. "
+            "Tambahkan DATABASE_URL di Vercel Environment Variables."
+        )
 
     # Menghubungkan db dengan aplikasi Flask (Menggunakan pola Factory)
     db.init_app(app)
@@ -28,6 +36,23 @@ def create_app():
     app.register_blueprint(barang_bp)
     app.register_blueprint(laporan_bp)
     app.register_blueprint(public_bp)
+
+    # ─── Error Handlers ──────────────────────────────────────────
+    @app.errorhandler(404)
+    def page_not_found(e):
+        return render_template('errors/404.html'), 404
+
+    @app.errorhandler(500)
+    def internal_server_error(e):
+        db.session.rollback()  # Rollback session yang rusak agar tidak hanging
+        return render_template('errors/500.html'), 500
+
+    @app.errorhandler(413)
+    def request_entity_too_large(e):
+        from flask import flash, redirect, request as req
+        flash("Ukuran file melebihi batas maksimal 5MB.", "warning")
+        return redirect(req.referrer or '/'), 413
+    # ─────────────────────────────────────────────────────────────
 
     @app.route('/dashboard')
     @login_required
@@ -58,4 +83,4 @@ def create_app():
 app = create_app()
 
 if __name__ == '__main__':
-    app.run(debug=True)
+    app.run(debug=False)

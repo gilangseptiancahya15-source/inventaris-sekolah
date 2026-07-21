@@ -1,0 +1,24 @@
+{% extends "public/layout.html" %}
+
+{% block title %}404 — Halaman Tidak Ditemukan{% endblock %}
+
+{% block content %}
+<div class="container py-5 text-center" style="min-height: 70vh; display:flex; flex-direction:column; align-items:center; justify-content:center;">
+    <div class="mb-4">
+        <i class="bi bi-exclamation-circle text-warning" style="font-size: 5rem;"></i>
+    </div>
+    <h1 class="display-1 fw-bolder text-dark" style="letter-spacing: -3px;">404</h1>
+    <h2 class="fw-bold text-dark mb-3">Halaman Tidak Ditemukan</h2>
+    <p class="text-muted mb-5 lead">
+        Halaman yang Anda cari tidak tersedia atau telah dipindahkan.
+    </p>
+    <div class="d-flex gap-3 justify-content-center flex-wrap">
+        <a href="/" class="btn btn-primary-modern btn-lg fw-bold text-white px-5 rounded-pill hoverable">
+            <i class="bi bi-house-door me-2"></i>Kembali ke Home
+        </a>
+        <a href="/inventaris" class="btn btn-outline-primary btn-lg fw-bold px-5 rounded-pill hoverable">
+            <i class="bi bi-box-seam me-2"></i>Lihat Inventaris
+        </a>
+    </div>
+</div>
+{% endblock %}
