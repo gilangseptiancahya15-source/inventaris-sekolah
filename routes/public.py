@@ -78,9 +78,9 @@ def inventaris():
                            kategori_filter=kategori_filter,
                            kondisi_filter=kondisi_filter)
 
-@public_bp.route('/inventaris/<id>')
+@public_bp.route('/inventaris/<uuid:id>')
 def detail(id):
-    barang = BarangInventaris.query.get_or_404(id)
+    barang = BarangInventaris.query.get_or_404(str(id))
     return render_template('publik/detail.html', barang=barang)
 
 @public_bp.route('/statistik')

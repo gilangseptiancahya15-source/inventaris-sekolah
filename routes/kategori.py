@@ -61,7 +61,7 @@ def edit(id):
         return redirect(url_for('kategori.index'))
 
     # Cek duplikasi, tetapi abaikan ID yang sedang diedit
-    existing = Kategori.query.filter(Kategori.nama_kategori == nama_kategori, Kategori.id != id).first()
+    existing = Kategori.query.filter(Kategori.nama_kategori == nama_kategori, Kategori.id != str(id)).first()
     if existing:
         flash(f"Kategori dengan nama '{nama_kategori}' sudah digunakan.", "warning")
         return redirect(url_for('kategori.index'))
