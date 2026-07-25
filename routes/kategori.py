@@ -30,8 +30,8 @@ def add():
         flash("Nama kategori wajib diisi dan minimal 3 karakter.", "danger")
         return redirect(url_for('kategori.index'))
 
-    # Mengecek duplikasi nama kategori
-    existing = Kategori.query.filter_by(nama_kategori=nama_kategori).first()
+    # Mengecek duplikasi nama kategori (Case-Insensitive)
+    existing = Kategori.query.filter(Kategori.nama_kategori.ilike(nama_kategori)).first()
     if existing:
         flash(f"Kategori '{nama_kategori}' sudah ada di database.", "warning")
         return redirect(url_for('kategori.index'))
@@ -60,9 +60,9 @@ def edit(id):
         flash("Nama kategori wajib diisi dan minimal 3 karakter.", "danger")
         return redirect(url_for('kategori.index'))
 
-    # Cek duplikasi, tetapi abaikan ID yang sedang diedit
-    existing = Kategori.query.filter(Kategori.nama_kategori == nama_kategori, Kategori.id != str(id)).first()
-    if existing:
+    # Cek duplikasi menggunakan ILIKE dan validasi ID di Python agar aman dari UUID DataError
+    existing = Kategori.query.filter(Kategori.nama_kategori.ilike(nama_kategori)).first()
+    if existing and existing.id != id:
         flash(f"Kategori dengan nama '{nama_kategori}' sudah digunakan.", "warning")
         return redirect(url_for('kategori.index'))
 

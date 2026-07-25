@@ -4,21 +4,12 @@ venv/
 env/
 .venv/
 *.db
-
-# Upload gambar barang (jangan push ke Git, tapi pastikan folder ada)
 static/uploads/barang/*
 !static/uploads/barang/.gitkeep
-
-# IDE
 .vscode/
 .idea/
 *.swp
 *.swo
 .DS_Store
 Thumbs.db
-
-# Environment Variables (JANGAN pernah di-commit)
 .env
-
-# Migrasi (opsional, bisa di-commit jika ingin track schema)
-# migrations/
